@@ -1,0 +1,21 @@
+meta {
+  name: adicionarConteudo
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://localhost:3000/conteudos/adicionarConteudos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "fk_materia": "4",
+    "titulo": "Crase2",
+    "imagem": "https://www.google.com/imgres?q=crase&imgurl=https%3A%2F%2Fstatic.portugues.com.br%2F2024%2F08%2Fdefinicao-do-que-e-crase-escrita-em-quadro-negro.jpg&imgrefurl=https%3A%2F%2Fwww.portugues.com.br%2Fgramatica%2Fo-uso-crase-.html&docid=HAZnZq4U8r4myM&tbnid=43tRu_E9IIpidM&vet=12ahUKEwi0zfW4162PAxVop5UCHdCnA8YQM3oECBYQAA..i&w=600&h=400&hcb=2&ved=2ahUKEwi0zfW4162PAxVop5UCHdCnA8YQM3oECBYQAA",
+    "descricao": "Aprendendo crase",
+    "arquivo": "https://www.colegiogeracao.com.br/wp-content/uploads/2019/06/Gramática-Crase.pdf"
+  }
+}

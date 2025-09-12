@@ -1,0 +1,12 @@
+Sprint 1: 31/07/2025 - 29/08/2025
+Fazer o BackEnd
+Teste de rotas
+Acabar o banco de dados
+Sprint 2: 30/08/2025 - 10/10/2025
+Finalizar o BackEnd
+Começar o FrontEnd
+Sprint 3: 11/10/2025 - 04/12/2025
+Finalizar o FrontEnd
+Fazer a junção do BackEnd e FrontEnd
+Realizar a documentação
+Realizar a apresentação

@@ -1,0 +1,19 @@
+meta {
+  name: registrarUsuario
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/usuarios/registrar
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "teste@gmail.com",
+    "nome": "teste",
+    "senha": "1234"
+  }
+}

@@ -117,7 +117,7 @@ export default function Login() {
                 setTimeout(() => {
                     setLoginSucesso(false);
                     localStorage.setItem('usuario', JSON.stringify(data.usuario));
-                    navigate('/');
+                    navigate('/conteudos');
                 }, 500);
             } else {
                 setError(data.mesage || 'Erro ao fazer Cafastro. Tente novamente');

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -79,9 +79,64 @@ const CadastreSe = styled.a`
 `;
 
 export default function Conteudo() {
+    const [materias, setMaterias] = useState([]);
+    const [erro, setErro] = useState(null)
+    const [loading, setLoading] = useState(true)
+
+    const handleInputChange = (e) => {
+        e.preventDefault();
+        console.log('handleInputChange', e.target.value);
+    } 
+
+
+    useEffect (() => {
+        const fetchMaterias = async () =>{
+            try {
+                const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
+                if(!resposta.ok){
+                    throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
+                }
+                const data = await resposta.json();
+                setMaterias(data);
+            } catch (error) {
+                setErro(error)
+                console.error('Erro ao buscar os dados', error)
+            }finally{
+                setLoading(false)
+            }
+        }
+        fetchMaterias();
+    }, [])
     return (
-        <>
-            
-        </>
+        <div>
+            <div>
+                <img src={Logo} alt="Logo"></img>
+            </div>
+            <div>
+                <p>INÍCIO</p>
+                <p>DISCIPLINAS</p>
+                <p>MEU PERFIL</p>
+                <a href="/">SAIR</a>
+            </div>
+            <div>
+                {/* Fazer perfil aqui */}
+            </div>
+            <div /> {/* É para fazer a linha */}
+            <div>
+                <form>
+                    <label htmlFor="pesquisar">O que você quer estudar hoje?</label>
+                    <input id="pesquisar" name="pesquisar" onChange={handleInputChange}/>
+                </form>
+            </div>
+            <div /> {/* É para fazer a linha */}
+            <div>
+                <ul>
+                    {materias.map(item => (
+                        <li key={item.id}>{item.nome}</li>
+                    ))}
+                </ul>
+            </div>
+        </div>
     );
 }
+

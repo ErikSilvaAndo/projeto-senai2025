@@ -9,6 +9,14 @@ const criarMaterias = async(nome) => {
     return rows;
 }
 
+const selecionarTodasMaterias = async() => {
+    const query = 'SELECT * FROM materias'
+
+    const { rows } = await conexao.query(query)
+    return rows
+}
+
 module.exports = {
-    criarMaterias   
+    criarMaterias,
+    selecionarTodasMaterias   
 }

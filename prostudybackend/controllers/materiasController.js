@@ -11,6 +11,16 @@ const criarMaterias = async(req, res) => {
     }
 }
 
+const selecionarTodasMaterias = async(req, res) => {
+    try {
+        const materia = await materiasModel.selecionarTodasMaterias();
+        res.json(materia)
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao listar todas as matérias', detalhe: error.message})
+    }
+}
+
 module.exports = {
-    criarMaterias
+    criarMaterias,
+    selecionarTodasMaterias
 }

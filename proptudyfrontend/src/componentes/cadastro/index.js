@@ -76,7 +76,7 @@ const CadastroErro = styled.p`
     margin-bottom: 10px;
 `;
 
-const CadastroSucesso = styled.div`
+const CadastroSucesso = styled.p`
     color: #9AECED;
     font-weight: bold;
     margin-bottom: 10px;

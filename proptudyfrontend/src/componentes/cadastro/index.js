@@ -70,8 +70,14 @@ const Botao = styled.button`
     }
 `;
 
-const ErrorMessage = styled.p`
-    color: #ff4d4d;
+const CadastroErro = styled.p`
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+`;
+
+const CadastroSucesso = styled.div`
+    color: #9AECED;
     font-weight: bold;
     margin-bottom: 10px;
 `;
@@ -139,8 +145,9 @@ export default function CadastroUsuario() {
     return (
         <Container>
             <Imagem src={Logo} alt="Logo"/>
+            {erro && <CadastroErro>{erro}</CadastroErro>}
+            {cadastroSucesso && <CadastroSucesso>Cadastro bem-sucedido</CadastroSucesso>}
             <form onSubmit={executaSubmit}>
-                {erro && <ErrorMessage>{erro}</ErrorMessage>}
                 <CardLabelInput>
                     <Label htmlFor="nome">NOME:</Label>
                     <Input

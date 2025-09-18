@@ -78,14 +78,6 @@ const CadastreSe = styled.a`
     }
 `;
 
-const ErroAoLogar = styled.p`
-    color: #fff;
-`;
-
-const SucessoAoLogar = styled.p`
-    color: #fff;
-`;
-
 export default function Conteudo() {
     return (
         <>

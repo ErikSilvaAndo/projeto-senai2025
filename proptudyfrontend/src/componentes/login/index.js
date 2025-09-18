@@ -80,10 +80,12 @@ const CadastreSe = styled.a`
 
 const ErroAoLogar = styled.p`
     color: #fff;
+    font-weight: bold;
 `;
 
 const SucessoAoLogar = styled.p`
-    color: #fff;
+    color: #9AECED;
+    font-weight: bold;
 `;
 
 export default function Login() {
@@ -118,7 +120,7 @@ export default function Login() {
                     navigate('/');
                 }, 500);
             } else {
-                setError(data.mesage || 'Erro ao fazer Login. Tente novamente');
+                setError(data.mesage || 'Erro ao fazer Cafastro. Tente novamente');
             }
         } catch (erro) {
             console.error('Falha ao conectar a API', erro);

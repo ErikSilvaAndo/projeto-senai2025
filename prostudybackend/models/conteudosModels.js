@@ -21,7 +21,7 @@ const alterarConteudo = async(id_conteudo, dados) => {
 }
 
 const selecionarTodosConteudos = async () => {
-    const query = 'SELECT * FROM conteudos';
+    const query = 'SELECT * FROM conteudos ORDER BY id_conteudo DESC LIMIT 2';
 
     const { rows } = await conexao.query(query);
     return rows;

@@ -70,18 +70,6 @@ const Botao = styled.button`
     }
 `;
 
-const CadastroErro = styled.p`
-    color: #fff;
-    font-weight: bold;
-    margin-bottom: 10px;
-`;
-
-const CadastroSucesso = styled.p`
-    color: #9AECED;
-    font-weight: bold;
-    margin-bottom: 10px;
-`;
-
 const CardBotao = styled.div`
     display: flex;
     align-items: center;
@@ -96,11 +84,10 @@ export default function EditarConteudo() {
     const [pdf, setPdf] = useState('');
     const [link, setLink] = useState('');
     const [loading, setLoading] = useState('')
-    const [cadastroSucesso, setCadastroSucesso] = useState(false);
 
     const navigate = useNavigate();
 
-     const executaSubmit = async (event) => {
+    const executaSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
 

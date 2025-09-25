@@ -1,316 +1,147 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import { href, useNavigation, useParams } from "react-router-dom";
+import { useNavigation, useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from '../imagens/logo2.png'
+import Logo from '../imagens/logo2.png';
 
 const Container = styled.div`
     background-color: #131D47;
     color: #fff;
     font-family: Arial, sans-serif;
     min-height: 100vh;
-    padding: 20px;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: center;
-`;
-
-const Header = styled.header`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 0;
-    margin-bottom: 20px;
-`;
-
-const LogoContainer = styled.div`
-    display: flex;
     align-items: center;
 `;
 
 const LogoImage = styled.img`
-    width: 200px;
-    height: 120px;
-    margin-right: 10px;
+    width: 250px;
+    height: 150px;
 `;
 
-const Nav = styled.nav`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50px;
-    gap: 55px;
+const Titulo = styled.h1`
+    font-size: 60px;
+    font-weight: 1000;
 `;
 
-const NavLink = styled.a`
-    color: #fff;
-    text-decoration: none;
-    font-size: 25px;
-    font-weight: bold;
-    &:hover {
-        text-decoration: underline;
-        cursor: pointer;
-    }
+const CardImagem = styled.div`
+    margin-top: 20px;
 `;
 
-const MainContent = styled.div`
-    width: 100%;
-    max-width: 1200px;
-    padding: 40px 0;
-    text-align: center;
+const CardTitulo = styled.div`
+    margin-bottom: 30px;
 `;
 
-const SearchSection = styled.div`
-    margin-bottom: 40px;
-`;
-
-const Titulo = styled.label`
-    font-size: 32px;
-    margin-bottom: 20px;
-`;
-
-const SearchInputContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    width: 100%;
-`;
-
-const SearchInput = styled.input`
-    width: 50%;
-    padding: 15px 50px 15px 20px;
-    border-radius: 50px;
-    border: none;
-    background-color: #9AECED;
-    font-size: 18px;
-    outline: none;
-    color: #131D47;
-`;
-
-const SeccaoMaterias = styled.div`
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 40px;
-`;
-
-const MateriasCard = styled.div`
-    background-color: #131D47;
-    border: 2px solid #9AECED;
-    border-radius: 10px;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 14px;
-`;
-
-const SecaoDestaque = styled.div`
-    margin-bottom: 40px;
+const CardConteudo = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 10px;
 `;
 
-const CardCardDestaque = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
+const ImagemConteudo = styled.img`
+    width: 350px;
+    height: 200px;
+    border-radius: 20px;
 `;
 
-const TituloDestaque = styled.h2`
-    font-size: 24px;
-    margin-bottom: 20px;
-`;
-
-const DestaqueLista = styled.div`
+const SecaoConteudo = styled.div`
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 50px;
 `;
 
-const DestaqueItem = styled.div`
-    background-color: #131D47;
-    border: 2px solid #9AECED;
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 5px;
+const CardLinkVoltar = styled.div`
+    position: absolute;
+    top: 20px;
+    left: 20px; 
 `;
 
-const DestaqueTexto = styled.span`
-    font-size: 18px;
-    font-weight: bold;
-`;
-
-const DestaqueLink = styled.a`
-    background-color: #9AECED;
-    color: #131D47;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 50px;
-    text-decoration: none;
-    cursor: pointer;
-    text-align: center;
-    margin: 10px;
-`;
-
-const Rodape = styled.footer`
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    padding: 20px 0;
-    background-color: #9AECED
-`;
-
-const LinksRodape = styled.a`
+const LinkVoltar = styled.a`
     color: #fff;
     text-decoration: none;
-    font-size: 14px;
-    &:hover {
-        text-decoration: underline;
-        cursor: pointer;
-    }
-`;
-const Linhas = styled.div`
-    width: 100%;
-    max-width: 1200px;
-    border: none;
-    border-top: 1px solid gray;
-    margin: 20px 0;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
 `;
 
-const CardRodape = styled.div`
-    width: 100%;
-    background-color: #9AECED;
-    height: 100%;
+const TituloConteudo = styled.p`
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
 `;
 
-const BolaDoPerfil = styled.div`
-    width: 40px;
-    height: 40px;
-    background-color: #9AECED;
-    border-radius: 50%;
-    margin-left: 20px;
-    cursor: pointer;
-    border: 2px solid #fff;
-`;
-
-export default function PaginasMaterias() {
+export default function PaginaMaterias() {
     const [materias, setMaterias] = useState([]);
     const [conteudos, setConteudos] = useState([]);
-    const { fk_materia } = useParams();
     const [erro, setErro] = useState(null);
     const [loading, setLoading] = useState(true);
-    const navigation = useNavigation();
+    const navigation = useNavigate();
 
-    useEffect (() => {
-        const fetchMaterias = async () => {
+    const id = useParams();
+    
+    useEffect(() => {
+        const fetchSelecionarConteudo = async () => {
             try {
-                const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
+                const resposta = await fetch(`http://localhost:3000/conteudos/getConteudosPorIdMateria/${id.id}`)
                 if(!resposta.ok){
                     throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
                 }
-                const data = await resposta.json();
-                setMaterias(data);
+                const dados = await resposta.json();
+                setConteudos(dados);
             } catch (error) {
-                setErro(error)
-                console.error('Erro ao buscar os dados', error)
+                setErro(error);
+                console.error('Erro ao buscar os dados', error);
             }finally{
-                setLoading(false)
-            }
-        }
-        fetchMaterias();
-    }, [])
-
-    useEffect(() => {
-        const fetchMateriaisEmDestaque = async () => {
-            try {
-                const resposta = await fetch('http://localhost:3000/conteudos/selecionarTodosConteudos');
-                if(!resposta.ok){
-                    throw new Error(`Erro ao listar os conteúdos ${resposta.status}`);
-                }
-                const data = await resposta.json();
-                setConteudos(data)
-            } catch (error) {
-                setErro(error)
-                console.error('Erro ao buscar os dados', error)
-            }finally{
-                setLoading(false)
-            }
-        }
-        fetchMateriaisEmDestaque();
-    }, [])
-
-    useEffect(() => {
-        const carregarConteudo = async () => {
-            try {
-                setLoading(true);
-                setErro(null);
-                const dados = await fetchConteudos();
-                setMaterias(dados);
-            } catch (err) {
-                console.error("Erro ao buscar movimentações:", err);
-                setErro("Não foi possível carregar as movimentações.");
-            } finally {
                 setLoading(false);
             }
-        };
-        carregarConteudo();
-    }, []);
-
-    const fetchConteudos = async () => {
-    try {
-        const resposta = await fetch(`http://localhost:3000/conteudos/getConteudosPorIdMateria/${fk_materia}`);
-        if (!resposta.ok) {
-            throw new Error('Erro ao buscar conteudo');
         }
-        const dados = await resposta.json();
-        return dados;
-    } catch (erro) {
-        console.error(erro);
-        throw erro;
-    }
-};
+        fetchSelecionarConteudo();
+    },[]);
+
+    useEffect(() => {
+        const fetchSelecionarMaterias = async () => {
+            try {
+                const resposta = await fetch(`http://localhost:3000/materias/selecionarPorId/${id.id}`)
+                if(!resposta.ok){
+                    throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
+                }
+                const dados = await resposta.json();
+                setMaterias(dados);
+            } catch (error) {
+                setErro(error);
+                console.error('Erro ao buscar os dados', error);
+            }finally{
+                setLoading(false);
+            }
+        }
+        fetchSelecionarMaterias();
+    },[]);
 
     return (
-        <div>
-            <div>
-                <img src={Logo} />
-            </div>
-            <div>
-                <div>
-                    {materias.map(item => (
-                        <div>
-                            <h1 key={item.id}>{item.nome}</h1>
-                           
-                        </div>
-                    ))}
-                </div>
-                {conteudos.map(item => (
-                    <div>
-                        <h1 key={item.id}>{item.titulo}</h1>
-                    </div>
+        <Container>
+            <CardLinkVoltar>
+                <LinkVoltar href="/conteudos">Voltar</LinkVoltar>
+            </CardLinkVoltar>
+            <CardImagem>
+                <LogoImage src={Logo} />
+            </CardImagem>
+            <CardTitulo>
+                {materias.map(item => (
+                    <Titulo key={item.id}>{item.nome}</Titulo>
                 ))}
-            </div>
-        </div>
+            </CardTitulo>
+
+            <SecaoConteudo>
+                {conteudos.map(item => (
+                    <CardConteudo>
+                        <TituloConteudo key={item.id}>{item.titulo}</TituloConteudo>
+                        <ImagemConteudo src={item.imagem} alt="Imagem do conteúdo"></ImagemConteudo>
+                        <p>{item.descricao}</p>
+                    </CardConteudo>
+                ))}
+            </SecaoConteudo>
+        </Container>
     );
 }
 

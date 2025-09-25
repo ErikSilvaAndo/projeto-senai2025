@@ -114,6 +114,7 @@ const MateriasCard = styled.div`
     text-transform: uppercase;
     font-weight: bold;
     font-size: 14px;
+    color: #fff;
 `;
 
 const SecaoDestaque = styled.div`
@@ -183,6 +184,7 @@ const Rodape = styled.footer`
 const LinksRodape = styled.a`
     color: #000;
     text-decoration: none;
+    font-weight: 1000;
     font-size: 14px;
     &:hover {
         text-decoration: underline;
@@ -213,12 +215,12 @@ const BolaDoPerfil = styled.div`
     border: 2px solid #fff;
 `;
 
-export default function Conteudo() {
+export default function Conteudo({id}) {
     const [materias, setMaterias] = useState([]);
     const [conteudos, setConteudos] = useState([]);
     const [erro, setErro] = useState(null);
     const [loading, setLoading] = useState(true);
-    const navigation = useNavigate();
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         e.preventDefault();
@@ -229,7 +231,6 @@ export default function Conteudo() {
         const fetchMaterias = async () => {
             try {
                 const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
-                const id_materia = materias.id
                 if(!resposta.ok){
                     throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
                 }
@@ -264,19 +265,11 @@ export default function Conteudo() {
         fetchMateriaisEmDestaque();
     }, [])
 
-    useEffect(() => {
-        const fetchSelecionarMaterias = async () => {
-            try {
-                const id_materia = materias.id
-                const resposta = await fetch(`http://localhost:3000/materias/selecionarPorId/${id_materia}`)
-                const dados = await resposta.json();
-                return dados
-            } catch (error) {
-                console.log('Erro ao buscar materias', erro)
-                throw erro
-            }
-        }
-    })
+    const irParaMateria = (id) => {
+        navigate(`/paginasMateria/${id}`);
+    };
+
+    
     
     return (
         <Container>
@@ -304,8 +297,8 @@ export default function Conteudo() {
                 <Linhas />
             <SeccaoMaterias>
                     {materias.map(item => (
-                        <MateriasCard>
-                            <a key={item.id} onClick={() => {navigation.navigate('paginasMateria',{id: item.id})}}>{item.nome}</a>
+                        <MateriasCard onClick={() => irParaMateria(item.id_materia)}>
+                            <a key={item.id_materia} onClick={() => irParaMateria(item.id_materia)}>{item.nome}</a>
                         </MateriasCard>
                     ))}
             </SeccaoMaterias>

@@ -1,0 +1,17 @@
+meta {
+  name: getConteudosPorIdMateria
+  type: http
+  seq: 15
+}
+
+get {
+  url: http://localhost:3000/conteudos/getConteudosPorIdMateria/2
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "fk_materia": "1"
+  }
+}

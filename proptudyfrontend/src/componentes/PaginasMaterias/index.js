@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import { href, useNavigate } from "react-router-dom";
+import { href, useNavigation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Logo from '../imagens/logo2.png'
 
@@ -47,10 +47,9 @@ const Nav = styled.nav`
 
 const NavLink = styled.a`
     color: #fff;
+    text-decoration: none;
+    font-size: 25px;
     font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-decoration: none;
     &:hover {
         text-decoration: underline;
         cursor: pointer;
@@ -146,6 +145,7 @@ const DestaqueLista = styled.div`
 const DestaqueItem = styled.div`
     background-color: #131D47;
     border: 2px solid #9AECED;
+    border-radius: 10px;
     padding: 10px;
     display: flex;
     justify-content: space-between;
@@ -181,7 +181,7 @@ const Rodape = styled.footer`
 `;
 
 const LinksRodape = styled.a`
-    color: #000;
+    color: #fff;
     text-decoration: none;
     font-size: 14px;
     &:hover {
@@ -213,23 +213,18 @@ const BolaDoPerfil = styled.div`
     border: 2px solid #fff;
 `;
 
-export default function Conteudo() {
+export default function PaginasMaterias() {
     const [materias, setMaterias] = useState([]);
     const [conteudos, setConteudos] = useState([]);
+    const { fk_materia } = useParams();
     const [erro, setErro] = useState(null);
     const [loading, setLoading] = useState(true);
-    const navigation = useNavigate();
-
-    const handleInputChange = (e) => {
-        e.preventDefault();
-        console.log('handleInputChange', e.target.value);
-    } 
+    const navigation = useNavigation();
 
     useEffect (() => {
         const fetchMaterias = async () => {
             try {
                 const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
-                const id_materia = materias.id
                 if(!resposta.ok){
                     throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
                 }
@@ -265,75 +260,57 @@ export default function Conteudo() {
     }, [])
 
     useEffect(() => {
-        const fetchSelecionarMaterias = async () => {
+        const carregarConteudo = async () => {
             try {
-                const id_materia = materias.id
-                const resposta = await fetch(`http://localhost:3000/materias/selecionarPorId/${id_materia}`)
-                const dados = await resposta.json();
-                return dados
-            } catch (error) {
-                console.log('Erro ao buscar materias', erro)
-                throw erro
+                setLoading(true);
+                setErro(null);
+                const dados = await fetchConteudos();
+                setMaterias(dados);
+            } catch (err) {
+                console.error("Erro ao buscar movimentações:", err);
+                setErro("Não foi possível carregar as movimentações.");
+            } finally {
+                setLoading(false);
             }
-        }
-    })
-    
-    return (
-        <Container>
-            <Header>
-                <LogoContainer>
-                    <LogoImage src={Logo} alt="Logo"></LogoImage>
-                </LogoContainer>
-            </Header>
-                <Nav>
-                    <NavLink>INÍCIO</NavLink>
-                    <NavLink>DISCIPLINAS</NavLink>
-                    <NavLink>MEU PERFIL</NavLink>
-                    <NavLink>SAIR</NavLink>
-                    <BolaDoPerfil />
-                </Nav>
-                <Linhas />
-            <MainContent>
-                <SearchSection>
-                    <SearchInputContainer>
-                        <Titulo htmlFor="pesquisar">O que você quer estudar hoje?</Titulo>
-                        <SearchInput id="pesquisar" name="pesquisar" onChange={handleInputChange}/>
-                    </SearchInputContainer>
-                </SearchSection>
+        };
+        carregarConteudo();
+    }, []);
 
-                <Linhas />
-            <SeccaoMaterias>
+    const fetchConteudos = async () => {
+    try {
+        const resposta = await fetch(`http://localhost:3000/conteudos/getConteudosPorIdMateria/${fk_materia}`);
+        if (!resposta.ok) {
+            throw new Error('Erro ao buscar conteudo');
+        }
+        const dados = await resposta.json();
+        return dados;
+    } catch (erro) {
+        console.error(erro);
+        throw erro;
+    }
+};
+
+    return (
+        <div>
+            <div>
+                <img src={Logo} />
+            </div>
+            <div>
+                <div>
                     {materias.map(item => (
-                        <MateriasCard>
-                            <a key={item.id} onClick={() => {navigation.navigate('paginasMateria',{id: item.id})}}>{item.nome}</a>
-                        </MateriasCard>
+                        <div>
+                            <h1 key={item.id}>{item.nome}</h1>
+                           
+                        </div>
                     ))}
-            </SeccaoMaterias>
-            <CardCardDestaque>
-                <SecaoDestaque>
-                    <TituloDestaque>MATERIAIS EM DESTAQUE</TituloDestaque>
+                </div>
+                {conteudos.map(item => (
                     <div>
-                        {conteudos.map(item => (
-                            <DestaqueLista>
-                                <DestaqueItem key={item.id}>{item.titulo}</DestaqueItem>
-                                <DestaqueLink href={item.arquivo} target="_blank">
-                                    <DestaqueTexto>ACESSAR</DestaqueTexto>
-                                </DestaqueLink>
-                            </DestaqueLista>
-                        ))}
+                        <h1 key={item.id}>{item.titulo}</h1>
                     </div>
-                </SecaoDestaque>
-            </CardCardDestaque>
-            </MainContent>
-            <CardRodape>
-                <Rodape>
-                    <LinksRodape>SOBRE</LinksRodape>
-                    <LinksRodape>CONTATO</LinksRodape>
-                    <LinksRodape>TERMOS DE USO</LinksRodape>
-                    <LinksRodape>POLÍTICAS DE PRIVACIDADE</LinksRodape>
-                </Rodape>
-            </CardRodape>
-        </Container>
+                ))}
+            </div>
+        </div>
     );
 }
 

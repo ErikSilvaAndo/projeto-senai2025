@@ -42,9 +42,20 @@ const deletarConteudo = async(req, res) => {
     }
 }
 
+const getConteudosPorIdMateria = async(req, res) => {
+    const { fk_materia } = req.params;
+    try {
+        const conteudo = await conteudosModel.getConteudosPorIdMateria({fk_materia})
+        res.json(conteudo);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar o conteudo por id da matéria', detalhe: error.message})
+    }
+}
+
 module.exports = {
     adicionarConteudos,
     alterarConteudo,
     selecionarTodosConteudos,
-    deletarConteudo
+    deletarConteudo,
+    getConteudosPorIdMateria
 }

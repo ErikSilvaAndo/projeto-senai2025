@@ -20,7 +20,21 @@ const selecionarTodasMaterias = async(req, res) => {
     }
 }
 
+const selecionarPorId = async(req, res) => {
+    const { id_materia } = req.params;
+    try {
+        const materia = await materiasModel.selecionarPorId(id_materia);
+        if(!materia){
+            return res.status(404).json({ erro: 'Erro ao buscar materia ', detalhe: error.message})
+        }
+        res.status(201).json(materia)
+    } catch (error) {
+        res.status(500).json({ erro: 'Erro ao buscar o ID da materia', detalhe: error.message})
+    }
+}
+
 module.exports = {
     criarMaterias,
-    selecionarTodasMaterias
+    selecionarTodasMaterias,
+    selecionarPorId
 }

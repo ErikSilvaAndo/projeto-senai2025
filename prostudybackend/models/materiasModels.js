@@ -16,7 +16,14 @@ const selecionarTodasMaterias = async() => {
     return rows
 }
 
+const selecionarPorId = async(id_materia) => {
+    const query = 'SELECT id_materia, nome FROM materias WHERE id_materia = $1'
+    const { rows } = await conexao.query(query, [id_materia]);
+    return rows;
+}
+
 module.exports = {
     criarMaterias,
-    selecionarTodasMaterias   
+    selecionarTodasMaterias,
+    selecionarPorId
 }

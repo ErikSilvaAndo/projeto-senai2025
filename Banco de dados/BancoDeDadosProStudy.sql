@@ -91,3 +91,6 @@ VALUES
 ('Maria Silva', 'maria@gmail.com', '123456' ),
 ('João Pereira', 'joao@gmail.com', '123456' ),
 ('Rapha', 'rapha@gmail.com', '123456' );
+
+SELECT id_materia, nome FROM materias WHERE id_materia = 1
+SELECT * FROM conteudos WHERE fk_materia = 1

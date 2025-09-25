@@ -32,9 +32,19 @@ const deletarConteudo = async (id_conteudo) => {
     await conexao.query(query, [id_conteudo])
 }
 
+const getConteudosPorIdMateria = async(dados) => {
+    const { fk_materia } = dados;
+
+    const query = `SELECT * FROM conteudos WHERE fk_materia = $1`
+
+    const { rows } = await conexao.query(query, [fk_materia]);
+    return rows;
+}
+
 module.exports = {
     adicionarConteudos,
     alterarConteudo,
     selecionarTodosConteudos,
-    deletarConteudo
+    deletarConteudo,
+    getConteudosPorIdMateria
 }

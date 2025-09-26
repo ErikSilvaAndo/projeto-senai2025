@@ -1,24 +1,29 @@
 const conexao = require('../conexao');
 
 const adicionarConteudos = async(dados) => {
-    const { fk_materia, titulo, imagem, descricao, arquivo } = dados
+    const { fk_materia, titulo, imagem, arquivo } = dados
 
-    const query = 'INSERT INTO conteudos(fk_materia, titulo, imagem, descricao, arquivo) VALUES($1, $2, $3, $4, $5) RETURNING *';
+    const query = 'INSERT INTO conteudos(fk_materia, titulo, imagem, arquivo) VALUES($1, $2, $3, $4) RETURNING *';
 
-    const { rows } = await conexao.query(query, [fk_materia, titulo, imagem, descricao, arquivo]);
+    const { rows } = await conexao.query(query, [fk_materia, titulo, imagem, arquivo]);
     return rows;
 }
 
 const alterarConteudo = async(id_conteudo, dados) => {
-    const { fk_materia, titulo, imagem, descricao, arquivo } = dados
+    const { fk_materia, titulo, imagem, arquivo } = dados
     const query = `
         UPDATE conteudos
-        SET fk_materia = $1, titulo = $2, imagem = $3, descricao = $4, arquivo = $5
-        WHERE id_conteudo = $6 RETURNING *
+        SET fk_materia = $1, titulo = $2, imagem = $3, arquivo = $4
+        WHERE id_conteudo = $5 RETURNING *
     `
-    const { rows } = await conexao.query(query, [fk_materia, titulo, imagem, descricao, arquivo, id_conteudo])
+    const { rows } = await conexao.query(query, [fk_materia, titulo, imagem, arquivo, id_conteudo])
     return rows[0]
 }
+
+// const atualizarArquivoConteudo = async(dados) =>{
+//     const { id_conteudo, fk_materia, titulo, imagem, arquivo } = dados
+//     const query = `UPDATE conteudos SET fk_materia = $1, titulo = $2, image`
+// }
 
 const selecionarTodosConteudos = async () => {
     const query = 'SELECT * FROM conteudos ORDER BY id_conteudo DESC LIMIT 2';
@@ -46,5 +51,5 @@ module.exports = {
     alterarConteudo,
     selecionarTodosConteudos,
     deletarConteudo,
-    getConteudosPorIdMateria
+    getConteudosPorIdMateria,
 }

@@ -78,6 +78,10 @@ export default function PaginaMaterias() {
     const [loading, setLoading] = useState(true);
     const navigation = useNavigate();
 
+    // Teste
+    
+
+
     const id = useParams();
     
     useEffect(() => {
@@ -128,16 +132,15 @@ export default function PaginaMaterias() {
             </CardImagem>
             <CardTitulo>
                 {materias.map(item => (
-                    <Titulo key={item.id}>{item.nome}</Titulo>
+                        <Titulo key={item.id}>{item.nome}</Titulo>
                 ))}
             </CardTitulo>
 
             <SecaoConteudo>
                 {conteudos.map(item => (
                     <CardConteudo>
-                        <TituloConteudo key={item.id}>{item.titulo}</TituloConteudo>
+                        <TituloConteudo key={item.id_conteudo}>{item.titulo}</TituloConteudo>
                         <ImagemConteudo src={item.imagem} alt="Imagem do conteúdo"></ImagemConteudo>
-                        <p>{item.descricao}</p>
                     </CardConteudo>
                 ))}
             </SecaoConteudo>

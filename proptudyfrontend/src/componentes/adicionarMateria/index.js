@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from '../imagens/logoCortada.png' // Certifique-se de que o caminho está correto
@@ -46,6 +46,29 @@ const Label = styled.label`
     margin-bottom: 10px
 `;
 
+const Select = styled.select`
+    border-radius: 160px;
+    width: 350px;
+    height: 50px;
+    background-color: #9AECED;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+`;
+
+const Option = styled.option`
+    border-radius: 160px;
+    width: 350px;
+    height: 50px;
+    background-color: #ffffffff;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+`;
+
 const Input = styled.input`
     border-radius: 160px;
     width: 350px;
@@ -79,28 +102,66 @@ const CardBotao = styled.div`
 `;
 
 export default function AdicionarMateria() {
+    const [fk_materia, setMateria] = useState('');
     const [titulo, setTitulo] = useState('');
-    const [materia, setMateria] = useState('');
-    const [pdf, setPdf] = useState('');
+    const [imagem, setImagem] = useState('');
+    const [descricao, setDescricao] = useState('');
+    const [arquivo, setArquivo] = useState('');
     const [link, setLink] = useState('');
-    const [loading, setLoading] = useState('')
+    const [loading, setLoading] = useState('');
+    const [erro, setErro] = useState(null)
 
     const navigate = useNavigate();
 
-     const executaSubmit = async (event) => {
+    // teste
+      const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      alert('Por favor, selecione um arquivo!');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile); // 'file' é o nome do campo que sua API espera
+
+    try {
+      const response = await fetch('/api/upload', { // Substitua '/api/upload' pelo endpoint da sua API
+        method: 'POST',
+        body: formData,
+        // O Content-Type é definido automaticamente para multipart/form-data pelo navegador ao enviar FormData
+      });
+
+      if (response.ok) {
+        alert('Arquivo enviado com sucesso!');
+      } else {
+        alert('Falha ao enviar arquivo.');
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+      alert('Ocorreu um erro ao enviar o arquivo.');
+    }
+  };
+
+    const executaSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
 
+        const idMateriaSelecionada = event.target.id_materia.value;
         try {
-            const resposta = await fetch('http://localhost:3000/materiais/adicionar', {
+            const resposta = await fetch('http://localhost:3000/conteudos/adicionarConteudos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ titulo, materia, pdf, link }),
+                body: JSON.stringify({fk_materia: idMateriaSelecionada, titulo, imagem, arquivo }),
             });
-
+            //console.log({fk_materia: idMateriaSelecionada,titulo, imagem, arquivo});
             if (resposta.ok) {
                 alert("Matéria adicionado com sucesso!");
-                navigate('/');
+                navigate('/conteudos');
             } else {
                 alert("Erro ao adicionar matéria.");
             }
@@ -112,11 +173,42 @@ export default function AdicionarMateria() {
         }
     };
 
+        useEffect (() => {
+            const fetchMaterias = async () => {
+                try {
+                    const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
+                    if(!resposta.ok){
+                        throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
+                    }
+                    const data = await resposta.json();
+                    setMateria(data);
+                } catch (error) {
+                    setErro(error)
+                    console.error('Erro ao buscar os dados', error)
+                }finally{
+                    setLoading(false)
+                }
+            }
+            fetchMaterias();
+        }, []);
+
     return (
         <Container>
             <Imagem src={Logo} alt="Logo"/>
             
             <form onSubmit={executaSubmit}>
+                <CardLabelInput>
+                    <Label htmlFor="materia">MATÉRIA:</Label>
+                    <Select id="id_materia" name="id_materia">
+                        <Option value="">Selecione a sua matéria</Option>
+                        {Array.isArray(fk_materia) &&
+                            fk_materia.map(item => (
+                            <Option key={item.id_materia} value={item.id_materia}>
+                                {item.nome}
+                            </Option>
+                            ))}
+                    </Select>
+                </CardLabelInput>
                 <CardLabelInput>
                     <Label htmlFor="titulo">TITÚLO:</Label>
                     <Input
@@ -129,36 +221,23 @@ export default function AdicionarMateria() {
                     />
                 </CardLabelInput>
                 <CardLabelInput>
-                    <Label htmlFor="materia">MATÉRIA:</Label>
+                    <Label htmlFor="imagem">IMAGEM:</Label>
                     <Input
                         type="text"
-                        id="materia"
-                        name="materia"
-                        value={materia}
-                        onChange={(e) => setMateria(e.target.value)}
+                        id="imagem"
+                        name="imagem"
+                        value={imagem}
+                        onChange={(e) => setImagem(e.target.value)}
                         required
                     />
                 </CardLabelInput>
                 <CardLabelInput>
-                    <Label htmlFor="pdf">PDF:</Label>
+                    <Label htmlFor="arquivo">ARQUIVO:</Label>
                     <Input
-                        type="text"
-                        id="pdf"
-                        name="pdf"
-                        
-                        value={pdf}
-                        onChange={(e) => setPdf(e.target.value)}
-                        required
-                    />
-                </CardLabelInput>
-                <CardLabelInput>
-                    <Label htmlFor="link">LINK:</Label>
-                    <Input
-                        type="text"
-                        id="link"
-                        name="link"
-                        value={link}
-                        onChange={(e) => setLink(e.target.value)}
+                        type="file"
+                        id="arquivo"
+                        name="arquivo"
+                        onChange={handleFileChange}
                         required
                     />
                 </CardLabelInput>

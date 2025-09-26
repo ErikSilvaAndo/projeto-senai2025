@@ -1,10 +1,11 @@
+const { json } = require('express');
 const conteudosModel = require('../models/conteudosModels');
 
 const adicionarConteudos = async(req, res) => {
-    const { fk_materia, titulo, imagem, descricao, arquivo } = req.body;
+    const { fk_materia, titulo, imagem, arquivo } = req.body;
 
     try {
-        const conteudo = await conteudosModel.adicionarConteudos({ fk_materia, titulo, imagem, descricao, arquivo })
+        const conteudo = await conteudosModel.adicionarConteudos({ fk_materia, titulo, imagem, arquivo })
         res.json(conteudo);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao adicionar o conteúdo', detalhe: error.message})
@@ -13,15 +14,26 @@ const adicionarConteudos = async(req, res) => {
 
 const alterarConteudo = async(req, res) => {
     const { id_conteudo } = req.params
-    const { fk_materia, titulo, imagem, descricao, arquivo } = req.body
+    const { fk_materia, titulo, imagem, arquivo } = req.body
 
     try {
-        const conteudo = await conteudosModel.alterarConteudo(id_conteudo, {fk_materia, titulo, imagem, descricao, arquivo})
+        const conteudo = await conteudosModel.alterarConteudo(id_conteudo, { fk_materia, titulo, imagem, arquivo })
         res.json(conteudo)
     } catch (error) {
         res.status(500).json({ error: 'Erro ao alterar o conteúdo', detalhe: error.message})
     }
 }
+
+// const atualizarArquivoConteudo = async(req, res) => {
+//     const { id_conteudo, fk_materia, titulo, imagem, arquivo } = req.body;
+
+//     try {
+//         const conteudo = await conteudosModel.atualizarArquivoConteudo({ id_conteudo, fk_materia, titulo, imagem, arquivo })
+//         res.json(conteudo)
+//     } catch (error) {
+//         res.status(500).json({ error: 'Erro ao alterar o conteúdo', detalhe: error.message })
+//     }
+// }
 
 const selecionarTodosConteudos = async(req, res) => {
     try {

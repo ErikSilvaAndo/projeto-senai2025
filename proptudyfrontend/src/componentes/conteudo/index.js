@@ -244,7 +244,7 @@ export default function Conteudo({id}) {
             }
         }
         fetchMaterias();
-    }, [])
+    }, []);
 
     useEffect(() => {
         const fetchMateriaisEmDestaque = async () => {
@@ -268,8 +268,6 @@ export default function Conteudo({id}) {
     const irParaMateria = (id) => {
         navigate(`/paginasMateria/${id}`);
     };
-
-    
     
     return (
         <Container>

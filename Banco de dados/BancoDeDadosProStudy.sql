@@ -10,13 +10,15 @@ CREATE TABLE materias(
 	nome VARCHAR(100) NOT NULL
 );
 
+DROP TABLE materias
+DROP TABLE conteudos
+
 CREATE TABLE conteudos(
 	id_conteudo SERIAL PRIMARY KEY,
 	fk_materia INT,
 	titulo VARCHAR(100) NOT NULL,
 	imagem TEXT,
-	descricao VARCHAR(100) NOT NULL,
-	arquivo TEXT,
+	arquivo BYTEA,
 	CONSTRAINT fk_materia FOREIGN KEY (fk_materia) REFERENCES materias(id_materia)
 );
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { useNavigation, useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from '../imagens/logo2.png';
+import Logo from '../../imagens/logo2.png';
 
 const Container = styled.div`
     background-color: #131D47;
@@ -72,16 +72,12 @@ const TituloConteudo = styled.p`
     text-transform: uppercase;
 `;
 
-export default function PaginaMaterias() {
+export default function PaginaMateriasProfessor() {
     const [materias, setMaterias] = useState([]);
     const [conteudos, setConteudos] = useState([]);
     const [erro, setErro] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigation = useNavigate();
-
-    // Teste
-    
-
 
     const id = useParams();
     
@@ -136,6 +132,8 @@ export default function PaginaMaterias() {
                         <Titulo key={item.id}>{item.nome}</Titulo>
                 ))}
             </CardTitulo>
+
+            <button onClick={() => navigation("/adicionarConteudo")}>Adicionar conteúdo</button>
 
             <SecaoConteudo>
                 {conteudos.map(item => (

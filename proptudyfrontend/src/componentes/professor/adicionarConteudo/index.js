@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from '../imagens/logoCortada.png' // Certifique-se de que o caminho está correto
-
-// --- Estilos Modificados ---
+import Logo from '../../imagens/logoCortada.png'
 
 const Container = styled.div`
     background-color: #131D47;
@@ -79,6 +77,9 @@ const Input = styled.input`
     font-size: 20px;
 `;
 
+const InputArquivo = styled.input`
+`;
+
 const Botao = styled.button`
     font-weight: 1000;
     background-color: #9AECED;
@@ -105,47 +106,17 @@ export default function AdicionarMateria() {
     const [fk_materia, setMateria] = useState('');
     const [titulo, setTitulo] = useState('');
     const [imagem, setImagem] = useState('');
-    const [descricao, setDescricao] = useState('');
     const [arquivo, setArquivo] = useState('');
-    const [link, setLink] = useState('');
     const [loading, setLoading] = useState('');
     const [erro, setErro] = useState(null)
 
     const navigate = useNavigate();
 
-    // teste
-      const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert('Por favor, selecione um arquivo!');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', selectedFile); // 'file' é o nome do campo que sua API espera
-
-    try {
-      const response = await fetch('/api/upload', { // Substitua '/api/upload' pelo endpoint da sua API
-        method: 'POST',
-        body: formData,
-        // O Content-Type é definido automaticamente para multipart/form-data pelo navegador ao enviar FormData
-      });
-
-      if (response.ok) {
-        alert('Arquivo enviado com sucesso!');
-      } else {
-        alert('Falha ao enviar arquivo.');
-      }
-    } catch (error) {
-      console.error('Erro:', error);
-      alert('Ocorreu um erro ao enviar o arquivo.');
-    }
-  };
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
 
     const executaSubmit = async (event) => {
         event.preventDefault();
@@ -158,10 +129,9 @@ export default function AdicionarMateria() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({fk_materia: idMateriaSelecionada, titulo, imagem, arquivo }),
             });
-            //console.log({fk_materia: idMateriaSelecionada,titulo, imagem, arquivo});
             if (resposta.ok) {
                 alert("Matéria adicionado com sucesso!");
-                navigate('/conteudos');
+                navigate(-1);
             } else {
                 alert("Erro ao adicionar matéria.");
             }
@@ -233,7 +203,7 @@ export default function AdicionarMateria() {
                 </CardLabelInput>
                 <CardLabelInput>
                     <Label htmlFor="arquivo">ARQUIVO:</Label>
-                    <Input
+                    <InputArquivo
                         type="file"
                         id="arquivo"
                         name="arquivo"
@@ -245,7 +215,7 @@ export default function AdicionarMateria() {
                     <Botao type="submit" disabled={loading}>
                         {loading ? 'Adicionando...' : 'ADICIONAR'}
                     </Botao>
-                    <VoltarBotao href="/">Voltar</VoltarBotao>
+                    <VoltarBotao onClick={() => navigate(-1)}>Voltar</VoltarBotao>
                 </CardBotao>
             </form>
         </Container>

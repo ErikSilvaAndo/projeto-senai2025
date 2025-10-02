@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { href, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from '../imagens/logo2.png'
+import Logo from '../../imagens/logo2.png'
 
 const Container = styled.div`
     background-color: #131D47;
@@ -161,7 +161,7 @@ const BolaDoPerfil = styled.div`
     border: 2px solid #fff;
 `;
 
-export default function Conteudo({id}) {
+export default function ConteudoProfessor({id}) {
     const [materias, setMaterias] = useState([]);
     const [conteudos, setConteudos] = useState([]);
     const [erro, setErro] = useState(null);
@@ -212,7 +212,7 @@ export default function Conteudo({id}) {
     }, [])
 
     const irParaMateria = (id) => {
-        navigate(`/paginasMateria/${id}`);
+        navigate(`/paginasMateriaProfessor/${id}`);
     };
     
     return (
@@ -242,7 +242,7 @@ export default function Conteudo({id}) {
             <SeccaoMaterias>
                     {materias.map(item => (
                         <MateriasCard onClick={() => irParaMateria(item.id_materia)}>
-                            <a key={item.id_materia} onClick={() => irParaMateria(item.id_materia)}>{item.nome}</a>
+                            <a>{item.nome}</a>
                         </MateriasCard>
                     ))}
             </SeccaoMaterias>

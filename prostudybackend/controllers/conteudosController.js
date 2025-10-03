@@ -24,17 +24,6 @@ const alterarConteudo = async(req, res) => {
     }
 }
 
-// const atualizarArquivoConteudo = async(req, res) => {
-//     const { id_conteudo, fk_materia, titulo, imagem, arquivo } = req.body;
-
-//     try {
-//         const conteudo = await conteudosModel.atualizarArquivoConteudo({ id_conteudo, fk_materia, titulo, imagem, arquivo })
-//         res.json(conteudo)
-//     } catch (error) {
-//         res.status(500).json({ error: 'Erro ao alterar o conteúdo', detalhe: error.message })
-//     }
-// }
-
 const selecionarTodosConteudos = async(req, res) => {
     try {
         const conteudo = await conteudosModel.selecionarTodosConteudos();

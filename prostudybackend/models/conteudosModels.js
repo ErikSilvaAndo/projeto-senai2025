@@ -20,11 +20,6 @@ const alterarConteudo = async(id_conteudo, dados) => {
     return rows[0]
 }
 
-// const atualizarArquivoConteudo = async(dados) =>{
-//     const { id_conteudo, fk_materia, titulo, imagem, arquivo } = dados
-//     const query = `UPDATE conteudos SET fk_materia = $1, titulo = $2, image`
-// }
-
 const selecionarTodosConteudos = async () => {
     const query = 'SELECT * FROM conteudos ORDER BY id_conteudo DESC LIMIT 2';
 

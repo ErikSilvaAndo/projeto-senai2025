@@ -3,20 +3,36 @@ CREATE TABLE usuarios(
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
+<<<<<<< HEAD
     tipo VARCHAR(20) NOT NULL DEFAULT 'aluno'
+=======
+    tipo VARCHAR(20) NOT NULL DEFAULT 'aluno'  -- padrão aluno
+>>>>>>> 6250c199b7e0c44a544fef34dcd91549cc2b3293
 );
+DROP TABLE IF EXISTS usuarios CASCADE;
+DROP TABLE IF EXISTS professores_autorizados CASCADE;
+
+CREATE TABLE IF NOT EXISTS professores_autorizados(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS representantes_autorizados(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+select * from representantes_autorizados
+
 
 DROP TABLE usuarios
 
 CREATE TABLE materias(
-	id_materia SERIAL PRIMARY KEY,
-	nome VARCHAR(100) NOT NULL
+    id_materia SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
 );
 
-DROP TABLE materias
-DROP TABLE conteudos
-
 CREATE TABLE conteudos(
+<<<<<<< HEAD
 	id_conteudo SERIAL PRIMARY KEY,
 	fk_materia INT,
 	titulo VARCHAR(100) NOT NULL,
@@ -24,7 +40,17 @@ CREATE TABLE conteudos(
 	imagem TEXT,
 	arquivo TEXT,
 	CONSTRAINT fk_materia FOREIGN KEY (fk_materia) REFERENCES materias(id_materia)
+=======
+    id_conteudo SERIAL PRIMARY KEY,
+    fk_materia INT,
+    titulo VARCHAR(100) NOT NULL,
+    imagem TEXT,
+    descricao VARCHAR(100) NOT NULL,
+    arquivo TEXT,
+    CONSTRAINT fk_conteudos_materia FOREIGN KEY (fk_materia) REFERENCES materias(id_materia)
+>>>>>>> 6250c199b7e0c44a544fef34dcd91549cc2b3293
 );
+
 
 SELECT * FROM materias
 SELECT * FROM usuarios WHERE nome = 'erik@gmail.com'
@@ -52,6 +78,9 @@ CREATE TABLE usuarios(
 );
 
 DROP TABLE usuarios
+DROP TABLE conteudos
+DROP TABLE materias
+DROP TABLE conteudos;
 
 -- Tabela de professores autorizados (whitelist)
 CREATE TABLE IF NOT EXISTS professores_autorizados(
@@ -64,6 +93,14 @@ CREATE TABLE IF NOT EXISTS representantes_autorizados(
     email VARCHAR(255) UNIQUE NOT NULL
 );
 
+<<<<<<< HEAD
+=======
+select * from usuarios 
+select * from conteudos
+select * from professores_autorizados
+
+ DROP FUNCTION verificaProfessoresAutorizados();
+>>>>>>> 6250c199b7e0c44a544fef34dcd91549cc2b3293
 CREATE OR REPLACE FUNCTION verificaUsuariosAutorizados()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -90,19 +127,46 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+<<<<<<< HEAD
+=======
+DROP TRIGGER IF EXISTS trg_verificaProfessoresAutorizados ON usuarios;
+>>>>>>> 6250c199b7e0c44a544fef34dcd91549cc2b3293
 
 CREATE TRIGGER trigger_verifica_usuarios
 BEFORE INSERT ON usuarios
 FOR EACH ROW
 EXECUTE FUNCTION verificaUsuariosAutorizados();
 
+<<<<<<< HEAD
 INSERT INTO usuarios (nome, email, senha, tipo )
 VALUES 
 ('Rapha', 'rapha1@gmail.com', '123456', 'professor' );
+=======
+INSERT INTO representantes_autorizados (email) VALUES ('erik@gmail.com');
+INSERT INTO representantes_autorizados (email) VALUES ('guilerme@gmail.com');
+>>>>>>> 6250c199b7e0c44a544fef34dcd91549cc2b3293
 
 INSERT INTO professores_autorizados (email) 
 VALUES ('rapha@gmail.com');
 
+<<<<<<< HEAD
 SELECT * FROM usuarios
 
 DELETE FROM usuarios WHERE id_usuario = 2
+=======
+INSERT INTO usuarios(email) 
+VALUES ('rapha@gmail.com');
+INSERT INTO representantes_autorizados (email) VALUES ('lider@turma.com');
+INSERT INTO usuarios (nome, email, senha) VALUES ('Maria', 'lider@turma.com', '123');
+select * from 
+
+select * from usuarios
+INSERT INTO usuarios (nome, email, senha, tipo )
+VALUES 
+('Maria Silva', 'maria@gmail.com', '123456', 'aluno' ),
+('João Pereira', 'joao@gmail.com', '123456' , 'professor'),
+('Rapha', 'rapha@gmail.com', '123456', 'professor' );
+
+SELECT id_materia, nome FROM materias WHERE id_materia = 1
+SELECT * FROM conteudos WHERE fk_materia = 1
+>>>>>>> 6250c199b7e0c44a544fef34dcd91549cc2b3293

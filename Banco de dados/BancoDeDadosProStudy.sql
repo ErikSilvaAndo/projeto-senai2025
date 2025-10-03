@@ -1,26 +1,40 @@
 CREATE TABLE usuarios(
-	id_usuario SERIAL PRIMARY KEY,
-	email VARCHAR(255) NOT NULL,
-	nome VARCHAR(100) NOT NULL,
-	senha VARCHAR(255) NOT NULL
+    id_usuario SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    tipo VARCHAR(20) NOT NULL DEFAULT 'aluno'  -- padrão aluno
 );
+DROP TABLE IF EXISTS usuarios CASCADE;
+DROP TABLE IF EXISTS professores_autorizados CASCADE;
+
+CREATE TABLE IF NOT EXISTS professores_autorizados(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS representantes_autorizados(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+select * from representantes_autorizados
+
 
 CREATE TABLE materias(
-	id_materia SERIAL PRIMARY KEY,
-	nome VARCHAR(100) NOT NULL
+    id_materia SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
 );
-
-DROP TABLE materias
-DROP TABLE conteudos
 
 CREATE TABLE conteudos(
-	id_conteudo SERIAL PRIMARY KEY,
-	fk_materia INT,
-	titulo VARCHAR(100) NOT NULL,
-	imagem TEXT,
-	arquivo BYTEA,
-	CONSTRAINT fk_materia FOREIGN KEY (fk_materia) REFERENCES materias(id_materia)
+    id_conteudo SERIAL PRIMARY KEY,
+    fk_materia INT,
+    titulo VARCHAR(100) NOT NULL,
+    imagem TEXT,
+    descricao VARCHAR(100) NOT NULL,
+    arquivo TEXT,
+    CONSTRAINT fk_conteudos_materia FOREIGN KEY (fk_materia) REFERENCES materias(id_materia)
 );
+
 
 SELECT * FROM materias
 SELECT * FROM usuarios WHERE nome = 'erik@gmail.com'
@@ -48,6 +62,9 @@ CREATE TABLE usuarios(
 );
 
 DROP TABLE usuarios
+DROP TABLE conteudos
+DROP TABLE materias
+DROP TABLE conteudos;
 
 -- Tabela de professores autorizados (whitelist)
 CREATE TABLE professores_autorizados (
@@ -57,18 +74,28 @@ CREATE TABLE professores_autorizados (
 
 
 select * from usuarios 
+select * from conteudos
 select * from professores_autorizados
 
-
-CREATE OR REPLACE FUNCTION verificaProfessoresAutorizados()
+ DROP FUNCTION verificaProfessoresAutorizados();
+CREATE OR REPLACE FUNCTION verificaUsuariosAutorizados()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Se o email do novo usuário está na tabela de professores autorizados
+    -- Verifica primeiro se é professor
     IF EXISTS (
         SELECT 1 FROM professores_autorizados 
         WHERE LOWER(email) = LOWER(NEW.email)
     ) THEN
         NEW.tipo := 'professor';
+    
+    -- Se não for professor, verifica se é representante
+    ELSIF EXISTS (
+        SELECT 1 FROM representantes_autorizados
+        WHERE LOWER(email) = LOWER(NEW.email)
+    ) THEN
+        NEW.tipo := 'representante';
+
+    -- Caso contrário, aluno
     ELSE
         NEW.tipo := 'aluno';
     END IF;
@@ -77,22 +104,31 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_verificaProfessoresAutorizados
+DROP TRIGGER IF EXISTS trg_verificaProfessoresAutorizados ON usuarios;
+
+CREATE TRIGGER trigger_verifica_usuarios
 BEFORE INSERT ON usuarios
 FOR EACH ROW
-EXECUTE FUNCTION verificaProfessoresAutorizados();
+EXECUTE FUNCTION verificaUsuariosAutorizados();
+
+INSERT INTO representantes_autorizados (email) VALUES ('erik@gmail.com');
+INSERT INTO representantes_autorizados (email) VALUES ('guilerme@gmail.com');
 
 INSERT INTO professores_autorizados (email) 
 VALUES ('rapha@gmail.com');
 
 INSERT INTO usuarios(email) 
 VALUES ('rapha@gmail.com');
+INSERT INTO representantes_autorizados (email) VALUES ('lider@turma.com');
+INSERT INTO usuarios (nome, email, senha) VALUES ('Maria', 'lider@turma.com', '123');
+select * from 
 
-INSERT INTO usuarios (nome, email, senha)
+select * from usuarios
+INSERT INTO usuarios (nome, email, senha, tipo )
 VALUES 
-('Maria Silva', 'maria@gmail.com', '123456' ),
-('João Pereira', 'joao@gmail.com', '123456' ),
-('Rapha', 'rapha@gmail.com', '123456' );
+('Maria Silva', 'maria@gmail.com', '123456', 'aluno' ),
+('João Pereira', 'joao@gmail.com', '123456' , 'professor'),
+('Rapha', 'rapha@gmail.com', '123456', 'professor' );
 
 SELECT id_materia, nome FROM materias WHERE id_materia = 1
 SELECT * FROM conteudos WHERE fk_materia = 1

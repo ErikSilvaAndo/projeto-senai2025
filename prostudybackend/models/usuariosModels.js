@@ -2,7 +2,7 @@ const conexao = require('../conexao')
 const bcrypt = require('bcrypt')
 
 const criarUsuario = async(nome, email, senhaHash) => {
-    const query = 'INSERT INTO usuarios (email, nome, senha) VALUES ($1, $2, $3) RETURNING email, nome, senha';
+    const query = 'INSERT INTO usuarios (email, nome, senha) VALUES ($1, $2, $3) RETURNING *';
     const valores = [nome, email, senhaHash]
     const { rows } = await conexao.query(query, valores)
     return rows[0];

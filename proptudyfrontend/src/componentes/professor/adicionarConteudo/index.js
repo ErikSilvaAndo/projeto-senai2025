@@ -5,7 +5,7 @@ import Logo from '../../imagens/logoCortada.png'
 
 const Container = styled.div`
     background-color: #131D47;
-    height: 100vh;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,6 +18,7 @@ const VoltarBotao = styled.a`
     font-size: 15px;
     display: inline-block;
     margin-top: 10px;
+    margin-bottom: 10px;
 
     &:hover{
         cursor: pointer;
@@ -105,6 +106,7 @@ const CardBotao = styled.div`
 export default function AdicionarMateria() {
     const [fk_materia, setMateria] = useState('');
     const [titulo, setTitulo] = useState('');
+    const [link, setLink] = useState('')
     const [imagem, setImagem] = useState('');
     const [arquivo, setArquivo] = useState('');
     const [loading, setLoading] = useState('');
@@ -127,7 +129,7 @@ export default function AdicionarMateria() {
             const resposta = await fetch('http://localhost:3000/conteudos/adicionarConteudos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({fk_materia: idMateriaSelecionada, titulo, imagem, arquivo }),
+                body: JSON.stringify({fk_materia: idMateriaSelecionada, titulo, link, imagem, arquivo }),
             });
             if (resposta.ok) {
                 alert("Matéria adicionado com sucesso!");
@@ -191,9 +193,19 @@ export default function AdicionarMateria() {
                     />
                 </CardLabelInput>
                 <CardLabelInput>
-                    <Label htmlFor="imagem">IMAGEM:</Label>
+                    <Label htmlFor="titulo">LINK:</Label>
                     <Input
                         type="text"
+                        id="titulo"
+                        name="titulo"
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                    />
+                </CardLabelInput>
+                <CardLabelInput>
+                    <Label htmlFor="imagem">IMAGEM:</Label>
+                    <input
+                        type="file"
                         id="imagem"
                         name="imagem"
                         value={imagem}

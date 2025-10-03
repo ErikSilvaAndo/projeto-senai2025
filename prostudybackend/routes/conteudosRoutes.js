@@ -8,4 +8,5 @@ router.delete('/deletarConteudo/:id_conteudo', conteudosController.deletarConteu
 router.get('/selecionarTodosConteudos', conteudosController.selecionarTodosConteudos);
 router.get('/getConteudosPorIdMateria/:fk_materia', conteudosController.getConteudosPorIdMateria);
 
+
 module.exports = router

@@ -1,9 +1,12 @@
 CREATE TABLE usuarios(
-	id_usuario SERIAL PRIMARY KEY,
-	email VARCHAR(255) NOT NULL,
-	nome VARCHAR(100) NOT NULL,
-	senha VARCHAR(255) NOT NULL
+    id_usuario SERIAL PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    tipo VARCHAR(20) NOT NULL DEFAULT 'aluno'
 );
+
+DROP TABLE usuarios
 
 CREATE TABLE materias(
 	id_materia SERIAL PRIMARY KEY,
@@ -17,8 +20,9 @@ CREATE TABLE conteudos(
 	id_conteudo SERIAL PRIMARY KEY,
 	fk_materia INT,
 	titulo VARCHAR(100) NOT NULL,
+	link TEXT,
 	imagem TEXT,
-	arquivo BYTEA,
+	arquivo TEXT,
 	CONSTRAINT fk_materia FOREIGN KEY (fk_materia) REFERENCES materias(id_materia)
 );
 
@@ -50,25 +54,34 @@ CREATE TABLE usuarios(
 DROP TABLE usuarios
 
 -- Tabela de professores autorizados (whitelist)
-CREATE TABLE professores_autorizados (
+CREATE TABLE IF NOT EXISTS professores_autorizados(
     id SERIAL PRIMARY KEY,
-    email VARCHAR(150) UNIQUE NOT NULL
+    email VARCHAR(255) UNIQUE NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS representantes_autorizados(
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
 
-select * from usuarios 
-select * from professores_autorizados
-
-
-CREATE OR REPLACE FUNCTION verificaProfessoresAutorizados()
+CREATE OR REPLACE FUNCTION verificaUsuariosAutorizados()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Se o email do novo usuário está na tabela de professores autorizados
+    -- Verifica primeiro se é professor
     IF EXISTS (
         SELECT 1 FROM professores_autorizados 
         WHERE LOWER(email) = LOWER(NEW.email)
     ) THEN
         NEW.tipo := 'professor';
+    
+    -- Se não for professor, verifica se é representante
+    ELSIF EXISTS (
+        SELECT 1 FROM representantes_autorizados
+        WHERE LOWER(email) = LOWER(NEW.email)
+    ) THEN
+        NEW.tipo := 'representante';
+
+    -- Caso contrário, aluno
     ELSE
         NEW.tipo := 'aluno';
     END IF;
@@ -77,22 +90,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_verificaProfessoresAutorizados
+
+CREATE TRIGGER trigger_verifica_usuarios
 BEFORE INSERT ON usuarios
 FOR EACH ROW
-EXECUTE FUNCTION verificaProfessoresAutorizados();
+EXECUTE FUNCTION verificaUsuariosAutorizados();
+
+INSERT INTO usuarios (nome, email, senha, tipo )
+VALUES 
+('Rapha', 'rapha1@gmail.com', '123456', 'professor' );
 
 INSERT INTO professores_autorizados (email) 
 VALUES ('rapha@gmail.com');
 
-INSERT INTO usuarios(email) 
-VALUES ('rapha@gmail.com');
+SELECT * FROM usuarios
 
-INSERT INTO usuarios (nome, email, senha)
-VALUES 
-('Maria Silva', 'maria@gmail.com', '123456' ),
-('João Pereira', 'joao@gmail.com', '123456' ),
-('Rapha', 'rapha@gmail.com', '123456' );
-
-SELECT id_materia, nome FROM materias WHERE id_materia = 1
-SELECT * FROM conteudos WHERE fk_materia = 1
+DELETE FROM usuarios WHERE id_usuario = 2

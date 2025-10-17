@@ -117,8 +117,8 @@ const URL_BASE_API = 'http://localhost:3000';
 const FormularioProduto = ({ aoAdicionarProduto }) => {
     const [titulo, setTitulo] = useState('');
     const [link, setLink] = useState('');
-    const [imagem, setImagem] = useState(null);
-    const [arquivo, setArquivo] = useState(null);
+    const [imagem, setImagem] = useState('');
+    const [arquivo, setArquivo] = useState('');
     const [estaCarregando, setEstaCarregando] = useState(false);
     const [erro, setErro] = useState('');
     const [loading, setLoading] = useState(false);
@@ -128,8 +128,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
     const resetarFormulario = () => {
         setTitulo('');
         setLink('');
-        setImagem(null);
-        setArquivo(null);
+        setImagem('');
+        setArquivo('');
         setErro('');
     };
 
@@ -148,8 +148,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         try {
             // 1. Converter arquivos para Base64 antes de enviar
             const imagemBase64 = await converterParaBase64(imagem);
-            // const pdfBase64 = await converterParaBase64(arquivo);
-            const pdfBase64 ="";
+            const pdfBase64 = await converterParaBase64(arquivo);
+            //const pdfBase64 ="";
 
             alert(imagemBase64);
             alert(pdfBase64);
@@ -161,7 +161,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 },
                 body: JSON.stringify({
                     // As chaves precisam corresponder ao que o backend (app.js) espera
-                    fk_materia,
+                    fk_materia: 1,
                     titulo: titulo, 
                     link: link,
                     imagem: imagemBase64, 

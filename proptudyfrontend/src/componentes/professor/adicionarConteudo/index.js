@@ -148,7 +148,11 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         try {
             // 1. Converter arquivos para Base64 antes de enviar
             const imagemBase64 = await converterParaBase64(imagem);
-            const pdfBase64 = await converterParaBase64(arquivo);
+            // const pdfBase64 = await converterParaBase64(arquivo);
+            const pdfBase64 ="";
+
+            alert(imagemBase64);
+            alert(pdfBase64);
 
             const resposta = await fetch('http://localhost:3000/conteudos/adicionarConteudos', {
                 method: 'POST',

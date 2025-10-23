@@ -3,32 +3,27 @@ const conteudosModel = require('../models/conteudosModels');
 
 
 const adicionarConteudos = async(req, res) => {
-    // let teste = req.body;
-    // console.log(teste);
-
-    const { fk_materia, titulo, link, imagem, arquivo } = req.body;
-    console.log("11");
+    const { fk_materia ,titulo, link, imagem, arquivo } = req.body;
+    
     if (!titulo || !fk_materia) {
-        return res.status(400).json({ error: "Todos os campos (fk_materia, nome) são obrigatórios." });
+        return res.status(400).json({ error: "Todos os campos (fk_materia) são obrigatórios." });
     }
-      console.log("12");
-    let finalImageUrl, finalPdfUrl;
-
-    const ProdutoFormatado = {
-        fk_materia: fk_materia,
-        titulo: titulo,
-        link: link,
-        imagem: imagem,
-        arquivo: arquivo
-        };
-
+    
     try {
+        let finalImageUrl, finalPdfUrl;
 
         finalImageUrl = await conteudosModel.uploadBase64ToStorage(imagem);
         finalPdfUrl = await conteudosModel.uploadBase64ToStorage(arquivo);
-        console.log("13");
+    
+        const ProdutoFormatado = {
+            fk_materia: fk_materia,
+            titulo: titulo,
+            link: link,
+            imagem: finalImageUrl,
+            arquivo: finalPdfUrl
+        };
+    
         const conteudo = await conteudosModel.adicionarConteudos({ fk_materia, titulo, link, finalImageUrl, finalPdfUrl })
-         console.log("14");
         res.json(conteudo, ProdutoFormatado);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao adicionar o conteúdo', detalhe: error.message})

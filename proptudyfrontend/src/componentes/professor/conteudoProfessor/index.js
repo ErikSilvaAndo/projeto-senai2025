@@ -212,7 +212,7 @@ export default function ConteudoProfessor({id}) {
     }, [])
 
     const irParaMateria = (id) => {
-        navigate(`/paginasMateriaProfessor/${id}`);
+        navigate(`/paginasConteudoProfessor/${id}`);
     };
     
     return (
@@ -249,10 +249,10 @@ export default function ConteudoProfessor({id}) {
             </MainContent>
             <CardRodape>
                 <Rodape>
-                    <LinksRodape>SOBRE</LinksRodape>
-                    <LinksRodape>CONTATO</LinksRodape>
-                    <LinksRodape>TERMOS DE USO</LinksRodape>
-                    <LinksRodape>POLÍTICAS DE PRIVACIDADE</LinksRodape>
+                    <LinksRodape href="/sobre">SOBRE</LinksRodape>
+                    <LinksRodape href="/contato">CONTATO</LinksRodape>
+                    <LinksRodape href="/termosDeUso">TERMOS DE USO</LinksRodape>
+                    <LinksRodape href="politica">POLÍTICAS DE PRIVACIDADE</LinksRodape>
                 </Rodape>
             </CardRodape>
         </Container>

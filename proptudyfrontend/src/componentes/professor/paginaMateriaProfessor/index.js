@@ -37,6 +37,12 @@ const CardConteudo = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding: 10px;
+    background-color: rgba(154, 236, 237, 0.9);
+    border: 2px solid white;
+    border-radius: 10px;
+    min-width: 250px;
+    width: 90%
 `;
 
 const ImagemConteudo = styled.img`
@@ -46,9 +52,12 @@ const ImagemConteudo = styled.img`
 `;
 
 const SecaoConteudo = styled.div`
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 50px;
+    justify-items: center;
+    width: 100%;
+    margin-bottom: 50px;
 `;
 
 const CardLinkVoltar = styled.div`
@@ -70,6 +79,32 @@ const TituloConteudo = styled.p`
     font-size: 20px;
     font-weight: bold;
     text-transform: uppercase;
+`;
+
+const CardLinks = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    margin-top: 10px;
+`;
+
+const Links = styled.a`
+    color: black;
+    text-decoration: none;
+`;
+
+const BotaoAdicionar = styled.button`
+    margin: 10px;
+    background-color: rgba(154, 236, 237, 0.9);
+    border: 2px solid white;
+    border-radius: 10px;
+    font-size: 100px;
+    cursor: pointer;
+    width: 90%;
+`;
+
+const BotaoExcluir = styled.button`
+
 `;
 
 export default function PaginaMateriasProfessor() {
@@ -133,13 +168,17 @@ export default function PaginaMateriasProfessor() {
                 ))}
             </CardTitulo>
 
-            <button onClick={() => navigation("/adicionarConteudo")}>Adicionar conteúdo</button>
 
             <SecaoConteudo>
+                <BotaoAdicionar onClick={() => navigation(`/adicionarConteudo`)}>+</BotaoAdicionar>
                 {conteudos.map(item => (
                     <CardConteudo>
                         <TituloConteudo key={item.id_conteudo}>{item.titulo}</TituloConteudo>
                         <ImagemConteudo src={item.imagem} alt="Imagem do conteúdo"></ImagemConteudo>
+                        <CardLinks>
+                            <Links href={item.link} target="_blank">Vídeo YouTube</Links>
+                            <Links href={item.arquivo} target="_blank">Arquivo PDF</Links>
+                        </CardLinks>
                     </CardConteudo>
                 ))}
             </SecaoConteudo>

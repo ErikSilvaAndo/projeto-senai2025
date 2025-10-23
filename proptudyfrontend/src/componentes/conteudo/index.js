@@ -50,7 +50,7 @@ const NavLink = styled.a`
     font-weight: bold;
     font-size: 20px;
     margin-bottom: 10px;
-    font-decoration: none;
+    text-decoration: none;
     &:hover {
         text-decoration: underline;
         cursor: pointer;
@@ -212,7 +212,7 @@ export default function Conteudo({id}) {
     }, [])
 
     const irParaMateria = (id) => {
-        navigate(`/paginasMateria/${id}`);
+        navigate(`/paginasConteudos/${id}`);
     };
     
     return (
@@ -223,7 +223,7 @@ export default function Conteudo({id}) {
                 </LogoContainer>
             </Header>
                 <Nav>
-                    <NavLink>INÍCIO</NavLink>
+                    <NavLink href="/conteudos">INÍCIO</NavLink>
                     <NavLink>DISCIPLINAS</NavLink>
                     <NavLink>MEU PERFIL</NavLink>
                     <NavLink>SAIR</NavLink>
@@ -249,10 +249,10 @@ export default function Conteudo({id}) {
             </MainContent>
             <CardRodape>
                 <Rodape>
-                    <LinksRodape>SOBRE</LinksRodape>
-                    <LinksRodape>CONTATO</LinksRodape>
-                    <LinksRodape>TERMOS DE USO</LinksRodape>
-                    <LinksRodape>POLÍTICAS DE PRIVACIDADE</LinksRodape>
+                    <LinksRodape href="/sobre">SOBRE</LinksRodape>
+                    <LinksRodape href="/contato">CONTATO</LinksRodape>
+                    <LinksRodape href="/termosDeUso">TERMOS DE USO</LinksRodape>
+                    <LinksRodape href="politica">POLÍTICAS DE PRIVACIDADE</LinksRodape>
                 </Rodape>
             </CardRodape>
         </Container>

@@ -10,6 +10,10 @@ post {
   auth: inherit
 }
 
+headers {
+  Content-Type: application/json
+}
+
 body:json {
   {
     "fk_materia": "1",
@@ -18,4 +22,5 @@ body:json {
     "imagem": "https://static.todamateria.com.br/upload/ge/om/geometriaespacialprismas-cke.jpg",
     "arquivo": "https://moodle3.ifsc.edu.br/pluginfile.php/860072/mod_resource/content/3/Trigonometria%20material.pdf"
   }
+  
 }

@@ -6,6 +6,11 @@ import EditarConteudo from './componentes/professor/editarConteudo';
 import PaginaMateria from './componentes/PaginasMaterias';
 import ConteudoProfessor from './componentes/professor/conteudoProfessor';
 import PaginaMateriasProfessor from './componentes/professor/paginaMateriaProfessor';
+import SobreFooter from './componentes/footer/sobre';
+import PoliticaFooter from './componentes/footer/politica';
+import TermosUsoFooter from './componentes/footer/termos de uso';
+import ContatoFooter from './componentes/footer/contato';
+import MeuPerfil from './componentes/perfil';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -15,11 +20,16 @@ function App() {
           <Route path="/" element={<Login titulo='Login'/>}></Route>
           <Route path="/cadastroUsuario" element={<CadastroUsuario titulo='CadastroUsuario'/>}></Route>
           <Route path='/conteudos' element={<Conteudo titulo='Conteudos'></Conteudo>}></Route>
-          <Route path='/adicionarConteudo' element={<AdicionarMateria></AdicionarMateria>}></Route>
-          <Route path='/editarConteudo/:id' element={<EditarConteudo></EditarConteudo>}></Route>
-          <Route path='/paginasMateria/:id' element={<PaginaMateria titulo="Páginas Matérias"/>}></Route>
+          <Route path='/adicionarConteudo' element={<AdicionarMateria titulo="Página de adicionar matéria"/>}></Route>
+          <Route path='/editarConteudo/:id' element={<EditarConteudo titulo="Página de edição de matéria"/>}></Route>
+          <Route path='/paginasConteudos/:id' element={<PaginaMateria titulo="Páginas Matérias"/>}></Route>
           <Route path='/conteudosProfessor' element={<ConteudoProfessor titulo="Conteúdos Professor"/>}></Route>
-          <Route path='/paginasMateriaProfessor/:id' element={<PaginaMateriasProfessor titulo="Página materia professor"/>}></Route>
+          <Route path='/paginasConteudoProfessor/:id' element={<PaginaMateriasProfessor titulo="Página materia professor"/>}></Route>
+          <Route path='/politica' element={<PoliticaFooter titulo="Página política de privacidade"/>}></Route>
+          <Route path='/sobre' element={<SobreFooter titulo="Página sobre"/>}></Route>
+          <Route path='/termosDeUso' element={<TermosUsoFooter titulo="Página termos de uso"/>}></Route>
+          <Route path='/contato' element={<ContatoFooter titulo="Página de contato"/>}></Route>
+          <Route path='/perfil' element={<MeuPerfil titulo="Página de perfil"/>}></Route>
         </Routes>
       </Router>
   );

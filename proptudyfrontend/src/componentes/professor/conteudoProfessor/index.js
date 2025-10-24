@@ -252,7 +252,7 @@ export default function ConteudoProfessor({id}) {
                     <LinksRodape href="/sobre">SOBRE</LinksRodape>
                     <LinksRodape href="/contato">CONTATO</LinksRodape>
                     <LinksRodape href="/termosDeUso">TERMOS DE USO</LinksRodape>
-                    <LinksRodape href="politica">POLÍTICAS DE PRIVACIDADE</LinksRodape>
+                    <LinksRodape href="/politica">POLÍTICAS DE PRIVACIDADE</LinksRodape>
                 </Rodape>
             </CardRodape>
         </Container>

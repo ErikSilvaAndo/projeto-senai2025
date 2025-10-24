@@ -171,7 +171,12 @@ export default function Conteudo({id}) {
     const handleInputChange = (e) => {
         e.preventDefault();
         console.log('handleInputChange', e.target.value);
-    } 
+    }
+    
+        const logout = () => {
+        localStorage.removeItem('usuario');
+        navigate('/')
+    }
 
     useEffect (() => {
         const fetchMaterias = async () => {
@@ -225,8 +230,8 @@ export default function Conteudo({id}) {
                 <Nav>
                     <NavLink href="/conteudos">INÍCIO</NavLink>
                     <NavLink>DISCIPLINAS</NavLink>
-                    <NavLink>MEU PERFIL</NavLink>
-                    <NavLink>SAIR</NavLink>
+                    <NavLink href="/perfil">MEU PERFIL</NavLink>
+                    <NavLink href="/" onClick={logout}>SAIR</NavLink>
                     <BolaDoPerfil />
                 </Nav>
                 <Linhas />
@@ -252,7 +257,7 @@ export default function Conteudo({id}) {
                     <LinksRodape href="/sobre">SOBRE</LinksRodape>
                     <LinksRodape href="/contato">CONTATO</LinksRodape>
                     <LinksRodape href="/termosDeUso">TERMOS DE USO</LinksRodape>
-                    <LinksRodape href="politica">POLÍTICAS DE PRIVACIDADE</LinksRodape>
+                    <LinksRodape href="/politica">POLÍTICAS DE PRIVACIDADE</LinksRodape>
                 </Rodape>
             </CardRodape>
         </Container>

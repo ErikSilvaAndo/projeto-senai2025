@@ -142,9 +142,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
     const [estaCarregando, setEstaCarregando] = useState(false);
     const [erro, setErro] = useState('');
     const [loading, setLoading] = useState(false);
-    const [fk_materia, setMateria] = useState('');
-
-    const id_materia = useParams();
+    const [fk_materia, setMateria] = useState([]);
+    const [id_materia, setIdMateria] = useState();
 
     const navigate = useNavigate();
     
@@ -167,19 +166,19 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             return;
         }
 
+
         setEstaCarregando(true);
 
         try {
             const imagemBase64 = await converterParaBase64(imagem);
             const pdfBase64 = await converterParaBase64(arquivo);
-
+            console.log()
             const resposta = await fetch('http://localhost:3000/conteudos/adicionarConteudos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    // As chaves precisam corresponder ao que o backend (app.js) espera
                     fk_materia: id_materia,
                     titulo: titulo, 
                     link: link,
@@ -187,9 +186,10 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                     arquivo: pdfBase64,
                 }),
             });
-
+            
             if(resposta.ok){
                 navigate(-1)
+                
             }
 
             if (!resposta.ok) {
@@ -219,6 +219,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                     }
                     const data = await resposta.json();
                     setMateria(data);
+                    // console.log(data)
                 } catch (error) {
                     setErro(error)
                     console.error('Erro ao buscar os dados', error)
@@ -229,6 +230,10 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             fetchMaterias();
         }, []);
 
+        const selecionarMateria = (e) => {
+            // O valor é sempre uma string, converta se o seu backend exigir número
+            setIdMateria(e.target.value); 
+        };
     return (
         <Container>
             <LogoImagem src={Logo}></LogoImagem>
@@ -237,8 +242,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             >
                 <CardLabelInput>
                     <Label htmlFor="materia">MATÉRIA:</Label>
-                        <Select id="id_materia" name="id_materia">
-                        <Option value="">Selecione a sua matéria</Option>
+                        <Select id="id_materia" name="id_materia" onChange={selecionarMateria}>
+                        <Option value="id_materia" >Selecione a sua matéria</Option>
                             {Array.isArray(fk_materia) &&
                                 fk_materia.map(item => (
                             <Option key={item.id_materia} value={item.id_materia}>
@@ -273,7 +278,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 <CardLabelInput>
                     <Label>IMAGEM:</Label>
                         <LabelArquivo htmlFor="imagem">
-                            {imagem ? "Imagem Selecionada ✅" : "Selecionar Imagem"}
+                            {imagem ? "Imagem Selecionada ✅" : "Selecione uma imagem"}
                             </LabelArquivo>
                             <InputArquivo
                             id="imagem"
@@ -284,7 +289,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                         />
                     <Label>ARQUIVO:</Label>
                     <LabelArquivo htmlFor="arquivo">
-                        {arquivo ? "PDF Selecionado ✅" : "Selecionar PDF"}
+                        {arquivo ? "PDF Selecionado ✅" : "Selecione um arquivo"}
                         </LabelArquivo> 
                         <InputArquivo
                         id="arquivo"
@@ -400,134 +405,3 @@ const AdicionarMateria = () => {
 };
 
 export default AdicionarMateria
-
-// export default function AdicionarMateria() {
-//     const [fk_materia, setMateria] = useState('');
-//     const [titulo, setTitulo] = useState('');
-//     const [link, setLink] = useState('')
-//     const [imagem, setImagem] = useState('');
-//     const [arquivo, setArquivo] = useState('');
-//     const [loading, setLoading] = useState('');
-//     const [erro, setErro] = useState(null)
-
-//     const navigate = useNavigate();
-
-//     const [selectedFile, setSelectedFile] = useState(null);
-
-//     const handleFileChange = (event) => {
-//         setSelectedFile(event.target.files[0]);
-//     };
-
-//     const executaSubmit = async (event) => {
-//         event.preventDefault();
-//         setLoading(true);
-
-//         const idMateriaSelecionada = event.target.id_materia.value;
-//         try {
-//             const resposta = await fetch('http://localhost:3000/conteudos/adicionarConteudos', {
-//                 method: 'POST',
-//                 headers: { 'Content-Type': 'application/json' },
-//                 body: JSON.stringify({fk_materia: idMateriaSelecionada, titulo, link, imagem, arquivo }),
-//             });
-//             if (resposta.ok) {
-//                 alert("Matéria adicionado com sucesso!");
-//                 navigate(-1);
-//             } else {
-//                 alert("Erro ao adicionar matéria.");
-//             }
-//         } catch (error) {
-//             console.error("Erro:", error);
-//             alert("Erro de conexão.");
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//         useEffect (() => {
-//             const fetchMaterias = async () => {
-//                 try {
-//                     const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
-//                     if(!resposta.ok){
-//                         throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
-//                     }
-//                     const data = await resposta.json();
-//                     setMateria(data);
-//                 } catch (error) {
-//                     setErro(error)
-//                     console.error('Erro ao buscar os dados', error)
-//                 }finally{
-//                     setLoading(false)
-//                 }
-//             }
-//             fetchMaterias();
-//         }, []);
-
-//     return (
-//         <Container>
-//             <Imagem src={Logo} alt="Logo"/>
-            
-//             <form onSubmit={executaSubmit}>
-//                 <CardLabelInput>
-//                     <Label htmlFor="materia">MATÉRIA:</Label>
-//                     <Select id="id_materia" name="id_materia">
-//                         <Option value="">Selecione a sua matéria</Option>
-//                         {Array.isArray(fk_materia) &&
-//                             fk_materia.map(item => (
-//                             <Option key={item.id_materia} value={item.id_materia}>
-//                                 {item.nome}
-//                             </Option>
-//                             ))}
-//                     </Select>
-//                 </CardLabelInput>
-//                 <CardLabelInput>
-//                     <Label htmlFor="titulo">TITÚLO:</Label>
-//                     <Input
-//                         type="text"
-//                         id="titulo"
-//                         name="titulo"
-//                         value={titulo}
-//                         onChange={(e) => setTitulo(e.target.value)}
-//                         required
-//                     />
-//                 </CardLabelInput>
-//                 <CardLabelInput>
-//                     <Label htmlFor="titulo">LINK:</Label>
-//                     <Input
-//                         type="text"
-//                         id="titulo"
-//                         name="titulo"
-//                         value={link}
-//                         onChange={(e) => setLink(e.target.value)}
-//                     />
-//                 </CardLabelInput>
-//                 <CardLabelInput>
-//                     <Label htmlFor="imagem">IMAGEM:</Label>
-//                     <input
-//                         type="file"
-//                         id="imagem"
-//                         name="imagem"
-//                         value={imagem}
-//                         onChange={(e) => setImagem(e.target.value)}
-//                         required
-//                     />
-//                 </CardLabelInput>
-//                 <CardLabelInput>
-//                     <Label htmlFor="arquivo">ARQUIVO:</Label>
-//                     <InputArquivo
-//                         type="file"
-//                         id="arquivo"
-//                         name="arquivo"
-//                         onChange={handleFileChange}
-//                         required
-//                     />
-//                 </CardLabelInput>
-//                 <CardBotao>
-//                     <Botao type="submit" disabled={loading}>
-//                         {loading ? 'Adicionando...' : 'ADICIONAR'}
-//                     </Botao>
-//                     <VoltarBotao onClick={() => navigate(-1)}>Voltar</VoltarBotao>
-//                 </CardBotao>
-//             </form>
-//         </Container>
-//     );
-// }

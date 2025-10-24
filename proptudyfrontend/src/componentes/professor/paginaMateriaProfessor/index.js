@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigation, useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from '../../imagens/logo2.png';
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const Container = styled.div`
     background-color: #131D47;
@@ -33,6 +34,7 @@ const CardTitulo = styled.div`
 `;
 
 const CardConteudo = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,8 +105,28 @@ const BotaoAdicionar = styled.button`
     width: 90%;
 `;
 
-const BotaoExcluir = styled.button`
+const IconesAcoes = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+`;
 
+const BotaoIcone = styled.button`
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    i {
+        color: white;
+        font-size: 20px;
+    }
+
+    &:hover i {
+        opacity: 0.7;
+        color: black;
+    }
 `;
 
 export default function PaginaMateriasProfessor() {
@@ -112,6 +134,8 @@ export default function PaginaMateriasProfessor() {
     const [conteudos, setConteudos] = useState([]);
     const [erro, setErro] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [idConteudo, setIdConteudo] = useState([])
+
     const navigation = useNavigate();
 
     const id = useParams();
@@ -154,6 +178,21 @@ export default function PaginaMateriasProfessor() {
         fetchSelecionarMaterias();
     },[]);
 
+        const executaExcluir = async (idConteudo) => {
+        if(window.confirm(`Tem certeza que deseja excluir o conteúdo ID ${idConteudo}?`)){
+            try {
+                const resposta = await fetch(`http://localhost:3000/conteudos/deletarConteudo/${idConteudo}`, {
+                    method: 'DELETE'
+                });
+                setConteudos(prev => prev.filter(item => item.id_conteudo !== idConteudo))
+                alert(`Conteúdo ID ${idConteudo} excluída com sucesso!`)
+            } catch (error) {
+                console.error(`Erro ao excluir a conteúdo ID ${idConteudo}`, error)
+                alert(`Falha ao excluir conteúdo: ${error.message}`)
+            }
+        }
+    }
+
     return (
         <Container>
             <CardLinkVoltar>
@@ -174,6 +213,14 @@ export default function PaginaMateriasProfessor() {
                 {conteudos.map(item => (
                     <CardConteudo>
                         <TituloConteudo key={item.id_conteudo}>{item.titulo}</TituloConteudo>
+                            <IconesAcoes>
+                                <BotaoIcone onClick={() => navigation(`/editarConteudo/${item.id_conteudo}`)}>
+                                    <i className="bi bi-pencil-square"></i>
+                                </BotaoIcone>
+                                <BotaoIcone onClick={() => executaExcluir(item.id_conteudo)} title="Excluir">
+                                    <i className="bi bi-trash3"></i>
+                                </BotaoIcone>
+                            </IconesAcoes>
                         <ImagemConteudo src={item.imagem} alt="Imagem do conteúdo"></ImagemConteudo>
                         <CardLinks>
                             <Links href={item.link} target="_blank">Vídeo YouTube</Links>

@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Logo from '../../imagens/logoCortada.png'
+import Conteudo from "../../conteudo";
+import { LIMIT } from "styled-components/dist/utils/createWarnTooManyClasses";
 
 const Container = styled.div`
     background-color: #131D47;
-    height: 100vh;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,6 +20,7 @@ const VoltarBotao = styled.a`
     font-size: 15px;
     display: inline-block;
     margin-top: 10px;
+    margin-bottom: 10px;
 
     &:hover{
         cursor: pointer;
@@ -25,179 +28,393 @@ const VoltarBotao = styled.a`
     }
 `;
 
-const atualizarConteudoApi = async(id, dadosConteudo) => {
-    try{
-        const carregar ={
-            ...dadosConteudo,
-            valor: parseFloat(dadosConteudo.valor)
-        }
-        const resposta = await fetch(`http://localhost:3000/conteudos/alterarConteudo/${id}`,{
-            method: 'PUT',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(carregar)
-        })
-        return await resposta.json();
-    }catch(erro){
-        console.log('Erro ao atualizar dados na API', erro)
-        throw erro;
+const Imagem = styled.img`
+    width: 250px;
+    height: 150px;
+    margin: 10px
+`;
+
+const CardLabelInput = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+`;
+
+const Label = styled.label`
+    color: #fff;
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px
+`;
+
+const Select = styled.select`
+    border-radius: 160px;
+    width: 100%;
+    height: 50px;
+    background-color: #9AECED;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+`;
+
+const Option = styled.option`
+    border-radius: 160px;
+    width: 350px;
+    height: 50px;
+    background-color: #ffffffff;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+`;
+
+const Input = styled.input`
+    border-radius: 160px;
+    width: 100%;
+    height: 50px;
+    background-color: #9AECED;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+`;
+
+const Botao = styled.button`
+    font-weight: 1000;
+    background-color: #9AECED;
+    width: 200px;
+    height: 45px;
+    border-radius: 50px;
+    font-size: 20px;
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
     }
-}
+`;
 
-export default function EditarConteudo() {
-    const [fk_materia, setMateria] = useState('');
-    const [titulo, setTitulo] = useState('');
-    const [imagem, setImagem] = useState('');
-    const [arquivo, setArquivo] = useState('');
-    const [loading, setLoading] = useState('');
-    const [erro, setErro] = useState(null);
+const CardBotao = styled.div`
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    flex-direction: column;
+`;
 
-    const [formDados, setFormDados] = useState({
-        id_conteudo: '',
-        fk_materia: '',
-        titulo: '',
-        imagem: '',
-        arquivo: ''
+const LabelArquivo = styled.label`
+    display: inline-block;
+    background-color: #9AECED;
+    color: #000;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 50px;
+    padding: 12px 25px;
+    cursor: pointer;
+    width: 350px;
+    transition: 0.3s;
+    margin-bottom: 8px;
+`;
+
+const InputArquivo = styled.input`
+    display: none; /* Esconde o input padrão */
+`;
+
+const LogoImagem = styled.img`
+    width: 400px;
+`;
+
+const converterParaBase64 = (arquivo) => {
+    return new Promise((resolver, rejeitar) => {
+        const leitor = new FileReader();
+        leitor.readAsDataURL(arquivo);
+        leitor.onload = () => resolver(leitor.result);
+        leitor.onerror = (erro) => rejeitar(erro);
     });
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [editErro, setEditErro] = useState(null);
-    const [conteudoEmEdicao, setConteudoEmEdicao] = useState(null);
-    const [conteudo, setConteudo] = useState([]);
-    const [selectedFile, setSelectedFile] = useState(null);
+};
+
+const URL_BASE_API = 'http://localhost:3000'; 
+
+const FormularioProduto = ({ aoAdicionarProduto }) => {
+    const [titulo, setTitulo] = useState('');
+    const [link, setLink] = useState('');
+    const [imagem, setImagem] = useState(null);
+    const [arquivo, setArquivo] = useState(null);
+    const [estaCarregando, setEstaCarregando] = useState(false);
+    const [erro, setErro] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [fk_materia, setMateria] = useState([]);
+    const [id_materia, setIdMateria] = useState();
+    const [conteudo, setConteudo] = useState([])
+
+    const { id_conteudo } = useParams();
 
     const navigate = useNavigate();
-
-    const handleInputChange = (e) =>{
-        const {name, value} = e.target;
-        setFormDados(prev => ({...prev, [name]: value}))
-    }
-
-    const executaEditar = (conteudo) => {
-        setConteudoEmEdicao(conteudo)
-        setFormDados({
-            id_conteudo: '',
-            fk_materia: '',
-            titulo: '',
-            imagem: '',
-            arquivo: ''
-        });
-        setEditErro(null);
-    }
-
-    const salvarEdicao = async(e) => {
-        e.preventDefault();
-        if(!conteudoEmEdicao) return;
-        setIsUpdating(true);
-        setEditErro(null);
-
-        try {
-            const carregar = {
-                fk_materia: '',
-                titulo: '',
-                imagem: '',
-                arquivo: ''
-            }
-
-            const conteudoAtualizado = await atualizarConteudoApi(conteudoEmEdicao.id, carregar);
-
-            setConteudo(prevConteudos => prevConteudos.map(mov => 
-                mov.id_conteudo === conteudoAtualizado.id ? conteudoAtualizado : mov
-            ))
-            setConteudoEmEdicao(null)
-        } catch (error) {
-            console.log('Erro ao salvar a edição', error)
-            setEditErro('Falha ao salvar a edição' + error)
-        }finally{
-            setIsUpdating(false)
-        }
-    }
-
-    const handleCancelarEdicao = () => {
-        setConteudoEmEdicao(null);
-        setEditErro(null);
-        navigate("/conteudos")
-    }
-
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
+    
+    // Reseta o estado do formulário
+    const resetarFormulario = () => {
+        setTitulo('');
+        setLink('');
+        setImagem(null);
+        setArquivo(null);
+        setErro('');
     };
 
-            useEffect (() => {
-                const fetchMaterias = async () => {
-                    try {
-                        const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
-                        if(!resposta.ok){
-                            throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
-                        }
-                        const data = await resposta.json();
-                        setMateria(data);
-                    } catch (error) {
-                        setErro(error)
-                        console.error('Erro ao buscar os dados', error)
-                    }finally{
-                        setLoading(false)
-                    }
-                }
-                fetchMaterias();
-            }, []);
+    // Função de manipulação do envio
+    const aoSubmeter = async (e) => {
+        e.preventDefault();
+        setErro('');
 
+        if (!titulo || !fk_materia) {
+            setErro('Por favor, preencha todos os campos e selecione os arquivos.');
+            return;
+        }
+
+        setEstaCarregando(true);
+
+        try {
+            const imagemBase64 = await converterParaBase64(imagem);
+            const pdfBase64 = await converterParaBase64(arquivo);
+            const resposta = await fetch(`http://localhost:3000/conteudos/alterarConteudo/${id_conteudo}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fk_materia: id_materia,
+                    titulo: titulo, 
+                    link: link,
+                    imagem: imagemBase64, 
+                    arquivo: pdfBase64,
+                }),
+            });
+            
+            if(resposta.ok){
+                navigate(-1)
+                
+            }
+
+            if (!resposta.ok) {
+                const dadosErro = await resposta.json();
+                throw new Error(dadosErro.error || `Erro HTTP: ${resposta.status}`);
+            }
+
+            resetarFormulario();
+            aoAdicionarProduto(); 
+
+        } catch (err) {
+            console.error('Erro ao cadastrar:', err);
+            // Mensagem de erro 
+            setErro(`Falha ao cadastrar: ${err.message}.`);
+        } finally {
+            setEstaCarregando(false);
+            alert("Conteúdo editado com sucesso")
+        }
+    };
+
+        useEffect(() => {
+            const fetchSelecionaTodosConteudos = async () => {
+                try {
+                    const resposta = await fetch('http://localhost:3000/conteudos/selecionarTodosConteudos');
+                    if(!resposta.ok){
+                        throw new Error(`Erro ao listar os conteúdos ${resposta.status}`);
+                    }
+                    const data = await resposta.json();
+                    setConteudo(data)
+                } catch (error) {
+                    setErro(error)
+                    console.error('Erro ao buscar os dados', error)
+                }finally{
+                    setLoading(false)
+                }
+            }
+            fetchSelecionaTodosConteudos();
+        }, [])
+
+        useEffect(() => {
+            const fetchConteudo = async () => {
+            try {
+                const resposta = await fetch(`http://localhost:3000/conteudos/selecionarConteudo/${id_conteudo}`);
+                const data = await resposta.json();
+
+                setTitulo(data.titulo);
+                setLink(data.link);
+                setIdMateria(data.fk_materia);
+            } catch (error) {
+                console.error("Erro ao carregar conteúdo:", error);
+            }
+        };
+            fetchConteudo();
+        }, [id_conteudo]);
+    
+
+        useEffect (() => {
+            const fetchMaterias = async () => {
+                try {
+                    const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
+                    if(!resposta.ok){
+                        throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
+                    }
+                    const data = await resposta.json();
+                    setMateria(data);
+                    // console.log(data)
+                } catch (error) {
+                    setErro(error)
+                    console.error('Erro ao buscar os dados', error)
+                }finally{
+                    setLoading(false)
+                }
+            }
+            fetchMaterias();
+        }, []);
+
+        const selecionarMateria = (e) => {
+            // O valor é sempre uma string, converta se o seu backend exigir número
+            setIdMateria(e.target.value); 
+        };
     return (
         <Container>
-            <img src={Logo} alt="Logo"/>
-            
-            <form onSubmit={salvarEdicao}>
-                <div>
-                    <label htmlFor="materia">MATÉRIA:</label>
-                    <select id="id_materia" name="id_materia">
-                        <option value="">Selecione a sua matéria</option>
-                        {Array.isArray(fk_materia) &&
-                            fk_materia.map(item => (
-                            <option key={item.id_materia} value={item.id_materia}>
+            <LogoImagem src={Logo}></LogoImagem>
+            <form 
+                onSubmit={aoSubmeter} 
+            >
+                <CardLabelInput>
+                    <Label htmlFor="materia">MATÉRIA:</Label>
+                        <Select id="id_materia" name="id_materia" onChange={selecionarMateria}>
+                        <Option value="id_materia" >Selecione a sua matéria</Option>
+                            {Array.isArray(fk_materia) &&
+                                fk_materia.map(item => (
+                            <Option key={item.id_materia} value={item.id_materia}>
                                 {item.nome}
-                            </option>
+                            </Option>
                             ))}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="titulo">TITÚLO:</label>
-                    <input
+                        </Select>
+                </CardLabelInput>
+
+                <CardLabelInput>
+                    <Label>TITÚLO:</Label>
+                    <Input
                         type="text"
-                        id="titulo"
-                        name="titulo"
                         value={titulo}
                         onChange={(e) => setTitulo(e.target.value)}
                         required
+                        disabled={estaCarregando}
                     />
-                </div>
-                <div>
-                    <label htmlFor="imagem">IMAGEM:</label>
-                    <input
-                        type="text"
-                        id="imagem"
-                        name="imagem"
-                        value={imagem}
-                        onChange={(e) => setImagem(e.target.value)}
+                </CardLabelInput>
+
+                <CardLabelInput>
+                    <Label>LINK:</Label>
+                    <Input
+                        type="url"
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
                         required
+                        disabled={estaCarregando}
                     />
-                </div>
-                <div>
-                    <label htmlFor="arquivo">ARQUIVO:</label>
-                    <input
-                        type="file"
+                </CardLabelInput>
+                
+                <CardLabelInput>
+                    <Label>IMAGEM:</Label>
+                        <LabelArquivo htmlFor="imagem">
+                            {imagem ? "Imagem Selecionada ✅" : "Selecione uma imagem"}
+                            </LabelArquivo>
+                            <InputArquivo
+                            id="imagem"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setImagem(e.target.files[0])}
+                            required
+                        />
+                    <Label>ARQUIVO:</Label>
+                    <LabelArquivo htmlFor="arquivo">
+                        {arquivo ? "Arquivo Selecionado ✅" : "Selecione um arquivo"}
+                        </LabelArquivo> 
+                        <InputArquivo
                         id="arquivo"
-                        name="arquivo"
-                        onChange={handleFileChange}
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => setArquivo(e.target.files[0])}
                         required
                     />
-                </div>
-                <div>
-                    <button type="submit" disabled={isUpdating}>
-                        {isUpdating ? 'Salvar...' : 'SALVAR'}
-                    </button>
-                    <button type="button" onClick={handleCancelarEdicao} disabled={isUpdating}>Voltar</button>
-                </div>
+                </CardLabelInput>
+
+                {/* Mensagem de Erro */}
+                {erro && (
+                    <div>
+                        <strong>Erro:</strong>
+                        <span>{erro}</span>
+                    </div>
+                )}
+
+                    <CardBotao>
+                        <Botao type="submit" disabled={loading}>
+                            {loading ? 'Adicionando...' : 'ADICIONAR'}
+                        </Botao>
+                        <VoltarBotao onClick={() => navigate(-1)}>Voltar</VoltarBotao>
+                    </CardBotao>
             </form>
         </Container>
     );
-}
+};
+
+
+const AdicionarMateria = () => {
+    const [produtos, setProdutos] = useState([]);
+    const [estaCarregando, setEstaCarregando] = useState(false);
+    const [erro, setErro] = useState(null);
+
+    // Função para buscar produtos da API
+    const buscarProdutos = async () => {
+        setEstaCarregando(true);
+        setErro(null);
+        try {
+            const resposta = await fetch(`http://localhost:3000/conteudos/selecionarTodosConteudos`);
+            if (!resposta.ok) {
+                throw new Error(`Erro ao buscar: ${resposta.statusText}`);
+            }
+            const dados = await resposta.json();
+            setProdutos(dados);
+        } catch (err) {
+            console.error("Erro na busca de produtos:", err);
+            // Mensagem de erro 
+            setErro(`Erro de conexão com a API: http://localhost:3000/conteudos/selecionarTodosConteudos. Verifique se o servidor Node.js está rodando.`);
+        } finally {
+            setEstaCarregando(false);
+        }
+    };
+
+    // Executa a busca na montagem do componente
+    useEffect(() => {
+        buscarProdutos();
+    }, []);
+
+    return (
+        <div>
+            
+            {/* Formulário de Cadastro */}
+            <FormularioProduto aoAdicionarProduto={buscarProdutos} />
+            <div>
+                {/* Mensagens de Status */}
+                {erro && (
+                    <div>
+                        <p><span >❌</span> {erro}</p>
+                        <button onClick={buscarProdutos}>
+                            Tentar Novamente <span>🔄</span>
+                        </button>
+                    </div>
+                )}
+
+                {/* Carregando Produtos */}
+                {estaCarregando && (
+                    <div>
+                        <span>🔄</span>
+                        Carregando conteúdos...
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default AdicionarMateria

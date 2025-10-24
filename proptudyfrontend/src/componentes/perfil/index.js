@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { href, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import Logo from '../imagens/logo2.png'
+import Logo from '../imagens/logo2.png';
 
 const Container = styled.div`
     background-color: #131D47;
@@ -165,32 +165,70 @@ export default function MeuPerfil() {
     const [conteudos, setConteudos] = useState([]);
     const [erro, setErro] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [usuario, setUsuario] = useState('');
 
-        useEffect(() => {
-            const fetchMateriaisEmDestaque = async () => {
-                try {
-                    const resposta = await fetch('http://localhost:3000/conteudos/selecionarTodosConteudos');
-                    if(!resposta.ok){
-                        throw new Error(`Erro ao listar os conteúdos ${resposta.status}`);
-                    }
-                    const data = await resposta.json();
-                    setConteudos(data)
-                } catch (error) {
-                    setErro(error)
-                    console.error('Erro ao buscar os dados', error)
-                }finally{
-                    setLoading(false)
-                }
+    const navigation = useNavigate();
+
+    const logout = () => {
+        localStorage.removeItem('usuario');
+        navigation('/')
+    }
+    
+    useEffect(() => {
+        const carregarUsuario = async () => {
+            try {
+                setLoading(true)
+                setErro(null)
+                const dados = await fetchUsuario();
+                setUsuario(dados);
+            } catch (erro) {
+                console.log('Erro ao buscar movimentações', erro);
+                setErro('Erro ao buscar movimentações'+ erro)
+            }finally{
+                setLoading(false)
             }
-            fetchMateriaisEmDestaque();
-        }, [])
+        }
+        carregarUsuario();
+    }, [])
+
+    const fetchUsuario = async () =>{
+    try {
+        const usuarioString = localStorage.getItem('usuario');
+        if (!usuarioString) {
+            console.log('Usuario não encontrado no localStorage');
+            return [];
+        }
+
+        const usuario = JSON.parse(usuarioString);
+        const usuarioId = usuario.id;
+        const resposta = await fetch(`http://localhost:3000/usuarios/buscarUsuariosPorId/${usuarioId}`)
+        const dados = await resposta.json();
+        return dados;
+    } catch (erro) {
+        console.log('Erro ao buscar movimentaçãoes', erro)
+        throw erro;
+    }
+}
+
     return (
         <Container>
             <Header>
                 <LogoContainer>
                     <LogoImage src={Logo} alt="Logo"></LogoImage>
                 </LogoContainer>
+                <a href="/" onClick={logout}>SAIR</a>
             </Header>
+            <div>
+                <p>MEU PERFIL</p>
+            </div>
+            <div>
+                <div />
+            </div>
+            <div>
+                {Array.isArray(usuario) && usuario.map((item) => {
+                    <p>{item.id_usuario}</p>
+                })}
+            </div>
         </Container>
     );
 }

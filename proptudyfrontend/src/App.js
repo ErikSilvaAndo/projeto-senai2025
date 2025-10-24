@@ -17,9 +17,9 @@ function App() {
   return (
     <Router>
         <Routes>
-          <Route path="/" element={<Login titulo='Login'/>}></Route>
-          <Route path="/cadastroUsuario" element={<CadastroUsuario titulo='CadastroUsuario'/>}></Route>
-          <Route path='/conteudos' element={<Conteudo titulo='Conteudos'></Conteudo>}></Route>
+          <Route path='/' element={<Login titulo='Login'/>}></Route>
+          <Route path='/cadastroUsuario' element={<CadastroUsuario titulo='CadastroUsuario'/>}></Route>
+          <Route path='/conteudos' element={<Conteudo titulo='Conteudos' />}></Route>
           <Route path='/adicionarConteudo' element={<AdicionarMateria titulo="Página de adicionar matéria"/>}></Route>
           <Route path='/editarConteudo/:id' element={<EditarConteudo titulo="Página de edição de matéria"/>}></Route>
           <Route path='/paginasConteudos/:id' element={<PaginaMateria titulo="Páginas Matérias"/>}></Route>

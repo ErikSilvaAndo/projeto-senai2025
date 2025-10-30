@@ -71,10 +71,24 @@ const getConteudosPorIdMateria = async(req, res) => {
     }
 }
 
+const selecionarConteudoPorId = async(req, res) => {
+    const { id_conteudo } = req.params;
+    try {
+        const conteudo = await conteudosModel.selecionarConteudoPorId(id_conteudo)
+        res.json(conteudo)
+        if(!conteudo){
+            return res.status(404).json({ erro: 'Erro ao buscar conteúdo ', detalhe: error.message})
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar o conteudo pelo id', detalhe: error.message})
+    }
+}
+
 module.exports = {
     adicionarConteudos,
     alterarConteudo,
     selecionarTodosConteudos,
     deletarConteudo,
-    getConteudosPorIdMateria
+    getConteudosPorIdMateria,
+    selecionarConteudoPorId
 }

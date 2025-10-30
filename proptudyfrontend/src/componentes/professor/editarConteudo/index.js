@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Logo from '../../imagens/logoCortada.png'
 import Conteudo from "../../conteudo";
-import { LIMIT } from "styled-components/dist/utils/createWarnTooManyClasses";
 
 const Container = styled.div`
     background-color: #131D47;
@@ -192,7 +191,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             
             if(resposta.ok){
                 navigate(-1)
-                
+                alert("Conteúdo editado com sucesso")
             }
 
             if (!resposta.ok) {
@@ -209,7 +208,6 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             setErro(`Falha ao cadastrar: ${err.message}.`);
         } finally {
             setEstaCarregando(false);
-            alert("Conteúdo editado com sucesso")
         }
     };
 
@@ -235,14 +233,11 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         useEffect(() => {
             const fetchConteudo = async () => {
             try {
-                const resposta = await fetch(`http://localhost:3000/conteudos/selecionarConteudo/${id_conteudo}`);
+                const resposta = await fetch(`http://localhost:3000/conteudos/selecionarConteudoPorId/${id_conteudo}`);
                 const data = await resposta.json();
-
-                setTitulo(data.titulo);
-                setLink(data.link);
-                setIdMateria(data.fk_materia);
+                setConteudo(data)
             } catch (error) {
-                console.error("Erro ao carregar conteúdo:", error);
+                console.error("Erro ao carregar conteúdo: ", error);
             }
         };
             fetchConteudo();
@@ -281,15 +276,10 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             >
                 <CardLabelInput>
                     <Label htmlFor="materia">MATÉRIA:</Label>
-                        <Select id="id_materia" name="id_materia" onChange={selecionarMateria}>
-                        <Option value="id_materia" >Selecione a sua matéria</Option>
-                            {Array.isArray(fk_materia) &&
-                                fk_materia.map(item => (
-                            <Option key={item.id_materia} value={item.id_materia}>
-                                {item.nome}
-                            </Option>
+                            {Array.isArray(conteudo) &&
+                                conteudo.map(item => (
+                                    <Input key={item.id_conteudo} value={item?.nome} disabled></Input>
                             ))}
-                        </Select>
                 </CardLabelInput>
 
                 <CardLabelInput>
@@ -349,7 +339,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
 
                     <CardBotao>
                         <Botao type="submit" disabled={loading}>
-                            {loading ? 'Adicionando...' : 'ADICIONAR'}
+                            {loading ? 'Editando...' : 'EDITAR'}
                         </Botao>
                         <VoltarBotao onClick={() => navigate(-1)}>Voltar</VoltarBotao>
                     </CardBotao>
@@ -359,7 +349,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
 };
 
 
-const AdicionarMateria = () => {
+const EditarConteudo = () => {
     const [produtos, setProdutos] = useState([]);
     const [estaCarregando, setEstaCarregando] = useState(false);
     const [erro, setErro] = useState(null);
@@ -417,4 +407,4 @@ const AdicionarMateria = () => {
     );
 };
 
-export default AdicionarMateria
+export default EditarConteudo

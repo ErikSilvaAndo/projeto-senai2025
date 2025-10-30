@@ -226,7 +226,7 @@ export default function MeuPerfil() {
             </div>
             <div>
                 {Array.isArray(usuario) && usuario.map((item) => {
-                    <p>{item.id_usuario}</p>
+                    <p>{item.nome}</p>
                 })}
             </div>
         </Container>

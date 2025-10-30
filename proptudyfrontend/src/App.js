@@ -21,7 +21,7 @@ function App() {
           <Route path='/cadastroUsuario' element={<CadastroUsuario titulo='CadastroUsuario'/>}></Route>
           <Route path='/conteudos' element={<Conteudo titulo='Conteudos' />}></Route>
           <Route path='/adicionarConteudo' element={<AdicionarMateria titulo="Página de adicionar matéria"/>}></Route>
-          <Route path='/editarConteudo/:id' element={<EditarConteudo titulo="Página de edição de matéria"/>}></Route>
+          <Route path='/editarConteudo/:id_conteudo' element={<EditarConteudo titulo="Página de edição de matéria"/>}></Route>
           <Route path='/paginasConteudos/:id' element={<PaginaMateria titulo="Páginas Matérias"/>}></Route>
           <Route path='/conteudosProfessor' element={<ConteudoProfessor titulo="Conteúdos Professor"/>}></Route>
           <Route path='/paginasConteudoProfessor/:id' element={<PaginaMateriasProfessor titulo="Página materia professor"/>}></Route>

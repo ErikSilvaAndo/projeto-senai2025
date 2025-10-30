@@ -89,11 +89,18 @@ const getConteudosPorIdMateria = async(dados) => {
     return rows;
 }
 
+const selecionarConteudoPorId = async(id_conteudo) => {
+    const query = 'SELECT DISTINCT m.nome AS nome FROM conteudos c JOIN materias m ON c.fk_materia = m.id_materia WHERE c.id_conteudo = $1'
+    const { rows } = await conexao.query(query, [id_conteudo]);
+    return rows
+}
+
 module.exports = {
     adicionarConteudos,
     alterarConteudo,
     selecionarTodosConteudos,
     deletarConteudo,
     getConteudosPorIdMateria,
-    uploadBase64ToStorage
+    uploadBase64ToStorage,
+    selecionarConteudoPorId
 }

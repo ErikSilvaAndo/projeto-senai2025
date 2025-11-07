@@ -171,7 +171,21 @@ export default function ConteudoProfessor({id}) {
     const handleInputChange = (e) => {
         e.preventDefault();
         console.log('handleInputChange', e.target.value);
-    } 
+    };
+
+        const usuarioString = localStorage.getItem('usuario');
+    const usuario = usuarioString ? JSON.parse(usuarioString) : null;
+
+    const irParaPerfil = () => {
+        if (usuario) {
+            navigate(`/perfil/${usuario.id}`);
+        }
+    };
+    
+        const logout = () => {
+        localStorage.removeItem('usuario');
+        navigate('/')
+    }
 
     useEffect (() => {
         const fetchMaterias = async () => {
@@ -223,10 +237,10 @@ export default function ConteudoProfessor({id}) {
                 </LogoContainer>
             </Header>
                 <Nav>
-                    <NavLink>INÍCIO</NavLink>
+                    <NavLink href="/conteudos">INÍCIO</NavLink>
                     <NavLink>DISCIPLINAS</NavLink>
-                    <NavLink>MEU PERFIL</NavLink>
-                    <NavLink>SAIR</NavLink>
+                    <NavLink onClick={irParaPerfil}>MEU PERFIL</NavLink>
+                    <NavLink href="/" onClick={logout}>SAIR</NavLink>
                     <BolaDoPerfil />
                 </Nav>
                 <Linhas />

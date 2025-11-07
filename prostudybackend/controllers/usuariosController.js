@@ -22,7 +22,7 @@ const loginUsuario = async(req, res) => {
         if(!senhaValida){
             return res.status(401).json({ erro: 'Senha inválida',})
         }
-        res.json({ mensagem: 'Login realizado com sucesso', usuario: { id: usuario.id, nome: usuario.nome, email: usuario.email}})
+        res.json({ mensagem: 'Login realizado com sucesso', usuario: { id: usuario.id_usuario, nome: usuario.nome, email: usuario.email}})
     }catch(error) {
         res.status(500).json({ erro: 'Erro no login', detalhe: error.message})
         
@@ -70,11 +70,40 @@ const deletarUsuarios = async(req, res) => {
     }
 }
 
+const salvarImagemUsuario = async (req, res) => {
+    const { id_usuario } = req.params;
+    const { imagem } = req.body;
+
+    if (!imagem) {
+        return res.status(400).json({ error: "A imagem é obrigatória." });
+    }
+
+    try {
+        const finalImageUrl = await usuarioModel.uploadBase64ToStorage(imagem);
+        const usuarioAtualizado = await usuarioModel.salvarImagemUsuario(id_usuario, finalImageUrl);
+
+        if (!usuarioAtualizado) {
+            return res.status(404).json({ error: "Usuário não encontrado." });
+        }
+
+        res.json({
+            mensagem: "Imagem atualizada com sucesso!",
+            usuario: usuarioAtualizado
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: "Erro ao salvar a imagem do usuário.",
+            detalhe: error.message
+        });
+    }
+};
+
 module.exports = {
     registrarUsuario,
     loginUsuario,
     buscarUsuarioPorId,
     selecionarTodosUsuarios,
     deletarUsuarios,
-    selecionarProfessores
+    selecionarProfessores,
+    salvarImagemUsuario
 }

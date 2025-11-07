@@ -29,7 +29,7 @@ function App() {
           <Route path='/sobre' element={<SobreFooter titulo="Página sobre"/>}></Route>
           <Route path='/termosDeUso' element={<TermosUsoFooter titulo="Página termos de uso"/>}></Route>
           <Route path='/contato' element={<ContatoFooter titulo="Página de contato"/>}></Route>
-          <Route path='/perfil' element={<MeuPerfil titulo="Página de perfil"/>}></Route>
+          <Route path='/perfil/:id_usuario' element={<MeuPerfil titulo="Página de perfil"/>}></Route>
         </Routes>
       </Router>
   );

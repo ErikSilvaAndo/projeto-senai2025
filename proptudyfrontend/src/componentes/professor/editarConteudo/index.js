@@ -46,29 +46,6 @@ const Label = styled.label`
     margin-bottom: 10px
 `;
 
-const Select = styled.select`
-    border-radius: 160px;
-    width: 100%;
-    height: 50px;
-    background-color: #9AECED;
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 20px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-`;
-
-const Option = styled.option`
-    border-radius: 160px;
-    width: 350px;
-    height: 50px;
-    background-color: #ffffffff;
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 20px;
-`;
-
 const Input = styled.input`
     border-radius: 160px;
     width: 100%;
@@ -145,7 +122,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
     const [loading, setLoading] = useState(false);
     const [fk_materia, setMateria] = useState([]);
     const [id_materia, setIdMateria] = useState();
-    const [conteudo, setConteudo] = useState([])
+    const [conteudo, setConteudo] = useState(null)
 
     const { id_conteudo } = useParams();
 
@@ -236,6 +213,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 const resposta = await fetch(`http://localhost:3000/conteudos/selecionarConteudoPorId/${id_conteudo}`);
                 const data = await resposta.json();
                 setConteudo(data)
+                console.log(data);
+                
             } catch (error) {
                 console.error("Erro ao carregar conteúdo: ", error);
             }
@@ -268,6 +247,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             // O valor é sempre uma string, converta se o seu backend exigir número
             setIdMateria(e.target.value); 
         };
+
     return (
         <Container>
             <LogoImagem src={Logo}></LogoImagem>
@@ -276,10 +256,20 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             >
                 <CardLabelInput>
                     <Label htmlFor="materia">MATÉRIA:</Label>
-                            {Array.isArray(conteudo) &&
+                            {/* {Array.isArray(conteudo) &&
                                 conteudo.map(item => (
-                                    <Input key={item.id_conteudo} value={item?.nome} disabled></Input>
-                            ))}
+                                    <Input key={item.id_conteudo} value={item.nome} disabled></Input>
+                            ))} */}
+                            {conteudo && conteudo.forEach( (e) => {
+                                
+                            
+                                <>
+                                <Input value={e.id_conteudo} disabled></Input>
+                                <Input value={e.nome} disabled></Input>
+                                </>
+                            })
+                            }
+                        
                 </CardLabelInput>
 
                 <CardLabelInput>

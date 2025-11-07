@@ -77,8 +77,9 @@ const LinkVoltar = styled.a`
 
 const TituloConteudo = styled.p`
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 800;
     text-transform: uppercase;
+    text-align: center;
     color: black;
 `;
 
@@ -92,6 +93,7 @@ const CardLinks = styled.div`
 const Links = styled.a`
     color: black;
     text-decoration: none;
+    font-weight: 700;
 `;
 
 export default function PaginaMaterias() {

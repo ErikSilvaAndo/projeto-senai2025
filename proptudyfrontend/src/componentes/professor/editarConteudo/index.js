@@ -122,7 +122,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
     const [loading, setLoading] = useState(false);
     const [fk_materia, setMateria] = useState([]);
     const [id_materia, setIdMateria] = useState();
-    const [conteudo, setConteudo] = useState(null)
+    const [conteudo, setConteudo] = useState([])
 
     const { id_conteudo } = useParams();
 
@@ -142,11 +142,6 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         e.preventDefault();
         setErro('');
 
-        if (!titulo || !fk_materia) {
-            setErro('Por favor, preencha todos os campos e selecione os arquivos.');
-            return;
-        }
-
         setEstaCarregando(true);
 
         try {
@@ -159,8 +154,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 },
                 body: JSON.stringify({
                     fk_materia: id_materia,
-                    titulo: titulo, 
-                    link: link,
+                    titulo, 
+                    link,
                     imagem: imagemBase64, 
                     arquivo: pdfBase64,
                 }),
@@ -191,12 +186,14 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         useEffect(() => {
             const fetchSelecionaTodosConteudos = async () => {
                 try {
-                    const resposta = await fetch('http://localhost:3000/conteudos/selecionarTodosConteudos');
+                    const resposta = await fetch(`http://localhost:3000/conteudos/selecionarConteudoPorId/${id_conteudo}`);
                     if(!resposta.ok){
                         throw new Error(`Erro ao listar os conteúdos ${resposta.status}`);
                     }
                     const data = await resposta.json();
                     setConteudo(data)
+                    console.log(data);
+                    
                 } catch (error) {
                     setErro(error)
                     console.error('Erro ao buscar os dados', error)
@@ -213,14 +210,18 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 const resposta = await fetch(`http://localhost:3000/conteudos/selecionarConteudoPorId/${id_conteudo}`);
                 const data = await resposta.json();
                 setConteudo(data)
-                console.log(data);
-                
+                if (data.length > 0) {
+                    setTitulo(data[0].titulo || '');
+                    setLink(data[0].link || '');
+                    setIdMateria(data[0].fk_materia || '');
+                }
             } catch (error) {
                 console.error("Erro ao carregar conteúdo: ", error);
             }
         };
             fetchConteudo();
         }, [id_conteudo]);
+
     
 
         useEffect (() => {
@@ -232,7 +233,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                     }
                     const data = await resposta.json();
                     setMateria(data);
-                    // console.log(data)
+                    console.log(conteudo)
                 } catch (error) {
                     setErro(error)
                     console.error('Erro ao buscar os dados', error)
@@ -256,20 +257,9 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             >
                 <CardLabelInput>
                     <Label htmlFor="materia">MATÉRIA:</Label>
-                            {/* {Array.isArray(conteudo) &&
-                                conteudo.map(item => (
-                                    <Input key={item.id_conteudo} value={item.nome} disabled></Input>
-                            ))} */}
-                            {conteudo && conteudo.forEach( (e) => {
-                                
-                            
-                                <>
-                                <Input value={e.id_conteudo} disabled></Input>
-                                <Input value={e.nome} disabled></Input>
-                                </>
-                            })
-                            }
-                        
+                        {/* <Input value={{conteudo.materia}}/> */}
+                        <Input value={conteudo.length > 0 ? conteudo[0].nome : ''} disabled/>
+                        <Input value={conteudo.length > 0 ? conteudo[0].fk_materia : ''} hidden/>
                 </CardLabelInput>
 
                 <CardLabelInput>

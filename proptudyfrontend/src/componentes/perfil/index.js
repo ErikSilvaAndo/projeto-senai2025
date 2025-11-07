@@ -101,12 +101,18 @@ const VoltarBotao = styled.a`
     }
 `;
 
+const SucessoAoLogar = styled.p`
+    color: #9AECED;
+    font-weight: bold;
+`;
+
 export default function MeuPerfil() {
     const [erro, setErro] = useState(false);
     const [loading, setLoading] = useState(false);
     const [usuario, setUsuario] = useState([]);
     const [imagemPreview, setImagemPreview] = useState(null);
     const [imagemBase64, setImagemBase64] = useState(null);
+    const [loginSucesso, setLoginSucesso] = useState(false);
 
     const navigation = useNavigate();
 
@@ -164,7 +170,6 @@ export default function MeuPerfil() {
         };
         reader.readAsDataURL(file);
     };
-
     const enviarImagem = async () => {
         if (!imagemBase64) {
             alert("Escolha uma imagem primeiro!");
@@ -187,8 +192,12 @@ export default function MeuPerfil() {
             const resultado = await resposta.json();
 
             if (resposta.ok) {
-                alert("Imagem atualizada com sucesso!");
                 setUsuario([resultado.usuario]);
+                setLoginSucesso(true)
+                setTimeout(() => {
+                    setLoginSucesso(false)
+                    navigation(-1)
+                }, 500);
             } else {
                 alert("Erro ao salvar imagem: " + resultado.error);
             }
@@ -207,7 +216,11 @@ export default function MeuPerfil() {
                 </VoltarBotao>
             </Header>
 
-            <p>MEU PERFIL</p>
+            <p><strong>MEU PERFIL</strong></p>
+            
+            {loginSucesso && (
+                <SucessoAoLogar>Atualizado com sucesso</SucessoAoLogar>
+            )}
 
             <BolaDoPerfil>
                 {imagemPreview ? (
@@ -239,9 +252,9 @@ export default function MeuPerfil() {
                         </div>
                     ))}
             </CardLabelInput>
-                        <button
-                onClick={enviarImagem}
-                style={{
+                <button
+                    onClick={enviarImagem}
+                    style={{
                     backgroundColor: "#9AECED",
                     color: "#131D47",
                     fontWeight: "bold",
@@ -249,9 +262,9 @@ export default function MeuPerfil() {
                     borderRadius: "25px",
                     border: "none",
                     cursor: "pointer",
-                }}
+                    }}
             >
-                Salvar Imagem
+                Salvar
             </button>
             <div>
                 <VoltarBotao onClick={() => navigation(-1)}>Voltar</VoltarBotao>

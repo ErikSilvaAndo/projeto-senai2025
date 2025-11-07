@@ -99,10 +99,28 @@ const SeccaoMaterias = styled.div`
 `;
 
 const MateriasCard = styled.div`
-    background-color: #131D47;
+    background-color: #9AECED;
     border: 2px solid #9AECED;
     border-radius: 10px;
     width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    color: #000000ff;
+`;
+
+const MateriasCardPesquisa = styled.div`
+    background-color: #131D47;
+    border: 2px solid #9AECED;
+    border-radius: 10px;
+    width: 120px;
     height: 100px;
     display: flex;
     justify-content: center;
@@ -140,7 +158,7 @@ const Linhas = styled.div`
     width: 100%;
     max-width: 1200px;
     border: none;
-    border-top: 1px solid gray;
+    border-top: 1px solid white;
     margin: 20px 0;
 `;
 
@@ -152,8 +170,8 @@ const CardRodape = styled.div`
 `;
 
 const BolaDoPerfil = styled.div`
-    width: 60px; /* aumenta um pouco pra ficar mais visível */
-    aspect-ratio: 1 / 1; /* garante proporção perfeita de círculo */
+    width: 60px; 
+    aspect-ratio: 1 / 1; 
     border-radius: 50%;
     margin-left: 20px;
     cursor: pointer;
@@ -205,7 +223,6 @@ export default function Conteudo({id}) {
 
     const conteudosFiltrados = busca
         ? conteudos.filter((conteudo) =>
-            // garante que só olhamos para título; evita undefined com ?. e converte para string
             String(conteudo.titulo || "").toLowerCase().includes(busca)
         )
         : [];
@@ -306,7 +323,7 @@ export default function Conteudo({id}) {
                     <NavLink href="/" onClick={logout}>SAIR</NavLink>
                     {Array.isArray(usuario) &&
                         usuario.map((item) => (
-                            <BolaDoPerfil key={item.id} onClick={() => navigate('/perfil/:id_usuario')}>
+                            <BolaDoPerfil key={item.id} onClick={irParaPerfil}>
                                 <img src={item.imagem}></img>
                             </BolaDoPerfil>
                     ))}
@@ -326,18 +343,17 @@ export default function Conteudo({id}) {
                         <SeccaoMaterias>
                             {conteudosFiltrados.length > 0 ? (
                                 conteudosFiltrados.map((item) => (
-                                    <MateriasCard
+                                    <MateriasCardPesquisa
                                         key={item.id_conteudo || item.id}
-                                        onClick={() => irParaMateria(item.id_materia)}
+                                        onClick={() => irParaMateria(item.fk_materia)}
                                     >
                                         {item.titulo}
-                                    </MateriasCard>
+                                    </MateriasCardPesquisa>
                                 ))
                             ) : (
                                 <p>Nenhum conteúdo encontrado.</p>
                             )}
                         </SeccaoMaterias>
-                        <Linhas />
                     </>
                 )}
 

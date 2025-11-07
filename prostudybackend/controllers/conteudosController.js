@@ -30,18 +30,34 @@ const adicionarConteudos = async(req, res) => {
     }
 }
 
-const alterarConteudo = async(req, res) => {
-    const { id_conteudo } = req.params
-    const { fk_materia, titulo, link, imagem, arquivo } = req.body
+const alterarConteudo = async (req, res) => {
+    const { id_conteudo } = req.params;
+    const { fk_materia, titulo, link, imagem, arquivo } = req.body;
 
     try {
-        const conteudo = await conteudosModel.alterarConteudo(id_conteudo, { fk_materia, titulo, link, imagem, arquivo })
-        res.json(conteudo)
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao alterar o conteúdo', detalhe: error.message})
-    }
-}
+        // Faz upload apenas se for base64 novo
+        const finalImageUrl = await conteudosModel.uploadBase64ToStorage(imagem);
+        const finalPdfUrl = await conteudosModel.uploadBase64ToStorage(arquivo);
 
+        const conteudoAtualizado = await conteudosModel.alterarConteudo(id_conteudo, {
+            fk_materia,
+            titulo,
+            link,
+            imagem: finalImageUrl,
+            arquivo: finalPdfUrl,
+        });
+
+        res.json({
+            mensagem: 'Conteúdo atualizado com sucesso!',
+            conteudo: conteudoAtualizado,
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: 'Erro ao editar o conteúdo',
+            detalhe: error.message,
+        });
+    }
+};
 const selecionarTodosConteudos = async(req, res) => {
     try {
         const conteudo = await conteudosModel.selecionarTodosConteudos();

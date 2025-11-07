@@ -56,17 +56,19 @@ const uploadBase64ToStorage = async(dataUrl) => {
 };
 
 
-const alterarConteudo = async(id_conteudo, dados) => {
-    const { fk_materia, titulo, link, imagem, arquivo } = dados
-    const query = `
-        UPDATE conteudos
-        SET fk_materia = $1, titulo = $2, link = $3, imagem = $4, arquivo = $5
-        WHERE id_conteudo = $6 RETURNING *
-    `
-    const { rows } = await conexao.query(query, [fk_materia, titulo, link, imagem, arquivo, id_conteudo])
-    return rows[0]
-}
+const alterarConteudo = async (id_conteudo, dados) => {
+    const { fk_materia, titulo, link, imagem, arquivo } = dados;
 
+    const query = `
+        UPDATE conteudos 
+        SET fk_materia = $1, titulo = $2, link = $3, imagem = $4, arquivo = $5
+        WHERE id_conteudo = $6
+        RETURNING *;
+    `;
+
+    const { rows } = await conexao.query(query, [fk_materia, titulo, link, imagem, arquivo, id_conteudo]);
+    return rows[0];
+};
 
 const selecionarTodosConteudos = async () => {
     const query = 'SELECT * FROM conteudos';
@@ -90,7 +92,7 @@ const getConteudosPorIdMateria = async(dados) => {
 }
 
 const selecionarConteudoPorId = async(id_conteudo) => {
-    const query = 'SELECT DISTINCT m.nome AS nome FROM conteudos c JOIN materias m ON c.fk_materia = m.id_materia WHERE c.id_conteudo = $1'
+    const query = 'SELECT c.id_conteudo, c.fk_materia, m.nome, c.titulo, c.link, c.imagem, c.arquivo  FROM conteudos c JOIN materias m ON c.fk_materia = m.id_materia WHERE c.id_conteudo = $1'
     const { rows } = await conexao.query(query, [id_conteudo]);
     return rows
 }

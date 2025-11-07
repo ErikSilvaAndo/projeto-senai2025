@@ -79,8 +79,10 @@ const LinkVoltar = styled.a`
 
 const TituloConteudo = styled.p`
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 800;
     text-transform: uppercase;
+    color: black;
+    text-align: center;
 `;
 
 const CardLinks = styled.div`
@@ -93,6 +95,7 @@ const CardLinks = styled.div`
 const Links = styled.a`
     color: black;
     text-decoration: none;
+    font-weight: 700;
 `;
 
 const BotaoAdicionar = styled.button`

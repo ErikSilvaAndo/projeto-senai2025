@@ -50,7 +50,7 @@ const NavLink = styled.a`
     font-weight: bold;
     font-size: 20px;
     margin-bottom: 10px;
-    font-decoration: none;
+    text-decoration: none;
     &:hover {
         text-decoration: underline;
         cursor: pointer;
@@ -99,10 +99,28 @@ const SeccaoMaterias = styled.div`
 `;
 
 const MateriasCard = styled.div`
-    background-color: #131D47;
+    background-color: #9AECED;
     border: 2px solid #9AECED;
     border-radius: 10px;
     width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 14px;
+    color: #000000ff;
+`;
+
+const MateriasCardPesquisa = styled.div`
+    background-color: #131D47;
+    border: 2px solid #9AECED;
+    border-radius: 10px;
+    width: 120px;
     height: 100px;
     display: flex;
     justify-content: center;
@@ -140,7 +158,7 @@ const Linhas = styled.div`
     width: 100%;
     max-width: 1200px;
     border: none;
-    border-top: 1px solid gray;
+    border-top: 1px solid white;
     margin: 20px 0;
 `;
 
@@ -152,36 +170,62 @@ const CardRodape = styled.div`
 `;
 
 const BolaDoPerfil = styled.div`
-    width: 40px;
-    height: 40px;
-    background-color: #9AECED;
+    width: 60px; 
+    aspect-ratio: 1 / 1; 
     border-radius: 50%;
     margin-left: 20px;
     cursor: pointer;
-    border: 2px solid #fff;
+    border: 3px solid #fff;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #131D47;
+    flex-shrink: 0;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+    }
 `;
 
-export default function ConteudoProfessor({id}) {
+export default function Conteudo({id}) {
     const [materias, setMaterias] = useState([]);
     const [conteudos, setConteudos] = useState([]);
     const [erro, setErro] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [usuario, setUsuario] = useState([]);
+    const [imagemPreview, setImagemPreview] = useState(null);
+    const [imagemBase64, setImagemBase64] = useState(null);
+    const [busca, setBusca] = useState("");
     const navigate = useNavigate();
+    
 
-    const handleInputChange = (e) => {
-        e.preventDefault();
-        console.log('handleInputChange', e.target.value);
+    const usuarioString = localStorage.getItem('usuario');
+    const usuarioId = usuarioString ? JSON.parse(usuarioString) : null;
+
+    const irParaMateria = (id) => {
+        navigate(`/paginasConteudoProfessor/${id}`);
     };
-
-        const usuarioString = localStorage.getItem('usuario');
-    const usuario = usuarioString ? JSON.parse(usuarioString) : null;
 
     const irParaPerfil = () => {
         if (usuario) {
-            navigate(`/perfil/${usuario.id}`);
+            navigate(`/perfil/${usuarioId.id}`);
         }
     };
-    
+
+    const handleInputChange = (e) => {
+        setBusca(e.target.value.toLowerCase());
+    }
+
+    const conteudosFiltrados = busca
+        ? conteudos.filter((conteudo) =>
+            String(conteudo.titulo || "").toLowerCase().includes(busca)
+        )
+        : [];
         const logout = () => {
         localStorage.removeItem('usuario');
         navigate('/')
@@ -225,10 +269,46 @@ export default function ConteudoProfessor({id}) {
         fetchMateriaisEmDestaque();
     }, [])
 
-    const irParaMateria = (id) => {
-        navigate(`/paginasConteudoProfessor/${id}`);
-    };
+        useEffect(() => {
+            const carregarUsuario = async () => {
+                try {
+                    setLoading(true);
+                    const dados = await fetchUsuario();
+                    setUsuario(dados);
+                    if (dados[0]?.imagem) {
+                        setImagemPreview(dados[0].imagem);
+                    }
+                } catch (erro) {
+                    console.log("Erro ao buscar usuário", erro);
+                    setErro("Erro ao buscar usuário: " + erro);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            carregarUsuario();
+        }, []);
     
+        const fetchUsuario = async () => {
+            try {
+                const usuarioString = localStorage.getItem("usuario");
+                if (!usuarioString) {
+                    console.log("Usuário não encontrado no localStorage");
+                    return [];
+                }
+    
+                const usuario = JSON.parse(usuarioString);
+                const usuarioId = usuario.id;
+                const resposta = await fetch(`http://localhost:3000/usuarios/buscarUsuariosPorId/${usuarioId}`);
+                const dados = await resposta.json();
+                return dados;
+            } catch (erro) {
+                console.log("Erro ao buscar usuário", erro);
+                throw erro;
+            }
+        };
+
+        
+
     return (
         <Container>
             <Header>
@@ -241,7 +321,12 @@ export default function ConteudoProfessor({id}) {
                     <NavLink>DISCIPLINAS</NavLink>
                     <NavLink onClick={irParaPerfil}>MEU PERFIL</NavLink>
                     <NavLink href="/" onClick={logout}>SAIR</NavLink>
-                    <BolaDoPerfil />
+                    {Array.isArray(usuario) &&
+                        usuario.map((item) => (
+                            <BolaDoPerfil key={item.id} onClick={irParaPerfil}>
+                                <img src={item.imagem}></img>
+                            </BolaDoPerfil>
+                    ))}
                 </Nav>
                 <Linhas />
             <MainContent>
@@ -252,11 +337,32 @@ export default function ConteudoProfessor({id}) {
                     </SearchInputContainer>
                 </SearchSection>
 
+                    {busca !== "" && (
+                    <>
+                        <h2 style={{ marginTop: 0 }}>Resultados da busca:</h2>
+                        <SeccaoMaterias>
+                            {conteudosFiltrados.length > 0 ? (
+                                conteudosFiltrados.map((item) => (
+                                    <MateriasCardPesquisa
+                                        key={item.id_conteudo || item.id}
+                                        onClick={() => irParaMateria(item.fk_materia)}
+                                    >
+                                        {item.titulo}
+                                    </MateriasCardPesquisa>
+                                ))
+                            ) : (
+                                <p>Nenhum conteúdo encontrado.</p>
+                            )}
+                        </SeccaoMaterias>
+                    </>
+                )}
+
                 <Linhas />
+
             <SeccaoMaterias>
                     {materias.map(item => (
                         <MateriasCard onClick={() => irParaMateria(item.id_materia)}>
-                            <a>{item.nome}</a>
+                            <a key={item.id_materia} onClick={() => irParaMateria(item.id_materia)}>{item.nome}</a>
                         </MateriasCard>
                     ))}
             </SeccaoMaterias>

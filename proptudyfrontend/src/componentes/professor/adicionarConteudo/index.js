@@ -278,7 +278,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 <CardLabelInput>
                     <Label>IMAGEM:</Label>
                         <LabelArquivo htmlFor="imagem">
-                            {imagem ? "Imagem Selecionada ✅" : "Selecione uma imagem"}
+                            {imagem ? "Imagem Selecionada" : "Selecione uma imagem"}
                             </LabelArquivo>
                             <InputArquivo
                             id="imagem"
@@ -289,7 +289,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                         />
                     <Label>ARQUIVO:</Label>
                     <LabelArquivo htmlFor="arquivo">
-                        {arquivo ? "PDF Selecionado ✅" : "Selecione um arquivo"}
+                        {arquivo ? "PDF Selecionado" : "Selecione um arquivo"}
                         </LabelArquivo> 
                         <InputArquivo
                         id="arquivo"

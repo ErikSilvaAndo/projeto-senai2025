@@ -94,7 +94,10 @@ const LabelArquivo = styled.label`
 `;
 
 const InputArquivo = styled.input`
-    display: none; /* Esconde o input padrão */
+    opacity: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
 `;
 
 const LogoImagem = styled.img`
@@ -144,43 +147,50 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
 
         setEstaCarregando(true);
 
-        try {
-            const imagemBase64 = await converterParaBase64(imagem);
-            const pdfBase64 = await converterParaBase64(arquivo);
-            const resposta = await fetch(`http://localhost:3000/conteudos/alterarConteudo/${id_conteudo}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    fk_materia: id_materia,
-                    titulo, 
-                    link,
-                    imagem: imagemBase64, 
-                    arquivo: pdfBase64,
-                }),
-            });
-            
-            if(resposta.ok){
-                navigate(-1)
-                alert("Conteúdo editado com sucesso")
-            }
+try {
+    let imagemBase64 = conteudo[0]?.imagem;
+    let arquivoBase64 = conteudo[0]?.arquivo;
 
-            if (!resposta.ok) {
-                const dadosErro = await resposta.json();
-                throw new Error(dadosErro.error || `Erro HTTP: ${resposta.status}`);
-            }
+    // Só converte se o usuário enviou um novo arquivo
+    if (imagem instanceof File) {
+        imagemBase64 = await converterParaBase64(imagem);
+    }
 
-            resetarFormulario();
-            aoAdicionarProduto(); 
+    if (arquivo instanceof File) {
+        arquivoBase64 = await converterParaBase64(arquivo);
+    }
 
-        } catch (err) {
-            console.error('Erro ao cadastrar:', err);
-            // Mensagem de erro 
-            setErro(`Falha ao cadastrar: ${err.message}.`);
-        } finally {
-            setEstaCarregando(false);
-        }
+    const resposta = await fetch(`http://localhost:3000/conteudos/alterarConteudo/${id_conteudo}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            fk_materia: id_materia,
+            titulo,
+            link,
+            imagem: imagemBase64,
+            arquivo: arquivoBase64,
+        }),
+    });
+
+    if (resposta.ok) {
+        alert("Conteúdo editado com sucesso!");
+        navigate(-1);
+    } else {
+        const dadosErro = await resposta.json();
+        throw new Error(dadosErro.error || `Erro HTTP: ${resposta.status}`);
+    }
+
+    resetarFormulario();
+    aoAdicionarProduto();
+
+} catch (err) {
+    console.error('Erro ao editar:', err);
+    setErro(`Falha ao editar: ${err.message}.`);
+} finally {
+    setEstaCarregando(false);
+}
     };
 
         useEffect(() => {
@@ -258,8 +268,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 <CardLabelInput>
                     <Label htmlFor="materia">MATÉRIA:</Label>
                         {/* <Input value={{conteudo.materia}}/> */}
-                        <Input value={conteudo.length > 0 ? conteudo[0].nome : ''} disabled/>
-                        <Input value={conteudo.length > 0 ? conteudo[0].fk_materia : ''} hidden/>
+                        <Input defaultValue={conteudo.length > 0 ? conteudo[0].nome : ''} disabled/>
+                        <Input defaultValue={conteudo.length > 0 ? conteudo[0].fk_materia : ''} hidden/>
                 </CardLabelInput>
 
                 <CardLabelInput>
@@ -268,7 +278,6 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                         type="text"
                         value={titulo}
                         onChange={(e) => setTitulo(e.target.value)}
-                        required
                         disabled={estaCarregando}
                     />
                 </CardLabelInput>
@@ -279,7 +288,6 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                         type="url"
                         value={link}
                         onChange={(e) => setLink(e.target.value)}
-                        required
                         disabled={estaCarregando}
                     />
                 </CardLabelInput>
@@ -287,25 +295,25 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 <CardLabelInput>
                     <Label>IMAGEM:</Label>
                         <LabelArquivo htmlFor="imagem">
-                            {imagem ? "Imagem Selecionada ✅" : "Selecione uma imagem"}
+                            {imagem ? "Imagem Selecionada" : "Selecione uma imagem"}
                             </LabelArquivo>
                             <InputArquivo
                             id="imagem"
                             type="file"
                             accept="image/*"
                             onChange={(e) => setImagem(e.target.files[0])}
-                            required
+                            required={!id_conteudo}
                         />
                     <Label>ARQUIVO:</Label>
                     <LabelArquivo htmlFor="arquivo">
-                        {arquivo ? "Arquivo Selecionado ✅" : "Selecione um arquivo"}
+                        {arquivo ? "Arquivo Selecionado" : "Selecione um arquivo"}
                         </LabelArquivo> 
                         <InputArquivo
                         id="arquivo"
                         type="file"
                         accept="application/pdf"
                         onChange={(e) => setArquivo(e.target.files[0])}
-                        required
+                        required={!id_conteudo}
                     />
                 </CardLabelInput>
 

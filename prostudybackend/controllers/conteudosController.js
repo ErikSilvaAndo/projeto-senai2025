@@ -35,14 +35,29 @@ const alterarConteudo = async (req, res) => {
     const { fk_materia, titulo, link, imagem, arquivo } = req.body;
 
     try {
-        // Faz upload apenas se for base64 novo
-        const finalImageUrl = await conteudosModel.uploadBase64ToStorage(imagem);
-        const finalPdfUrl = await conteudosModel.uploadBase64ToStorage(arquivo);
+        // Busca o conteúdo atual para preservar valores antigos
+        const conteudoExistente = (await conteudosModel.selecionarConteudoPorId(id_conteudo))[0];
+        if (!conteudoExistente) {
+            return res.status(404).json({ error: "Conteúdo não encontrado." });
+        }
 
+        let finalImageUrl = conteudoExistente.imagem;
+        let finalPdfUrl = conteudoExistente.arquivo;
+
+        // Faz upload apenas se o novo valor for base64
+        if (imagem && imagem.startsWith("data:")) {
+            finalImageUrl = await conteudosModel.uploadBase64ToStorage(imagem);
+        }
+
+        if (arquivo && arquivo.startsWith("data:")) {
+            finalPdfUrl = await conteudosModel.uploadBase64ToStorage(arquivo);
+        }
+
+        // Atualiza apenas os campos enviados
         const conteudoAtualizado = await conteudosModel.alterarConteudo(id_conteudo, {
-            fk_materia,
-            titulo,
-            link,
+            fk_materia: fk_materia || conteudoExistente.fk_materia,
+            titulo: titulo || conteudoExistente.titulo,
+            link: link || conteudoExistente.link,
             imagem: finalImageUrl,
             arquivo: finalPdfUrl,
         });

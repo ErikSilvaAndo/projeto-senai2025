@@ -33,7 +33,6 @@ const uploadBase64ToStorage = async(dataUrl) => {
 
     const fileBuffer = Buffer.from(base64Data, 'base64');
 
-    // Nomes de variáveis 
     const extensaoMapeada = {
         'image/png': 'png',
         'image/jpeg': 'jpg',
@@ -42,16 +41,13 @@ const uploadBase64ToStorage = async(dataUrl) => {
     };
     const extensao = extensaoMapeada[mimeType] || 'bin';
     
-    // Gera nome de arquivo único (chave única no Vercel Blob)
     const NomeArquivo = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${extensao}`;
 
-    // Salva no Vercel Blob
     const resultado = await put(NomeArquivo, fileBuffer, {
-        access: 'public', // Permite acesso público via URL
-        contentType: mimeType // Define o tipo de conteúdo
+        access: 'public', 
+        contentType: mimeType
     });
-   
-    // Retorna a URL pública gerada pelo Vercel Blob
+
     return resultado.url;
 };
 

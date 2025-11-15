@@ -201,6 +201,7 @@ export default function Conteudo({id}) {
     const [imagemPreview, setImagemPreview] = useState(null);
     const [imagemBase64, setImagemBase64] = useState(null);
     const [busca, setBusca] = useState("");
+    const [menuDisciplinasAberto, setMenuDisciplinasAberto] = useState(false);
     const navigate = useNavigate();
     
 

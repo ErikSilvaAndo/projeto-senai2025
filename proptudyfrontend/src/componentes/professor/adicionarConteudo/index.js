@@ -172,7 +172,6 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         try {
             const imagemBase64 = await converterParaBase64(imagem);
             const pdfBase64 = await converterParaBase64(arquivo);
-            console.log()
             const resposta = await fetch('http://localhost:3000/conteudos/adicionarConteudos', {
                 method: 'POST',
                 headers: {
@@ -201,8 +200,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             aoAdicionarProduto(); 
 
         } catch (err) {
-            console.error('Erro ao cadastrar:', err);
-            // Mensagem de erro 
+            console.error('Erro ao cadastrar conteúdo:', err); 
             setErro(`Falha ao cadastrar: ${err.message}.`);
         } finally {
             setEstaCarregando(false);

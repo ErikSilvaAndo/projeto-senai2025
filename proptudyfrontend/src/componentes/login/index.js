@@ -113,10 +113,14 @@ export default function Login() {
                 setTimeout(() => {
                     setLoginSucesso(false);
                     localStorage.setItem('usuario', JSON.stringify(data.usuario));
-                    navigate('/conteudos');
+                    if (data.usuario.tipo === "professor") {
+                        navigate('/conteudosProfessor');
+                    } else {
+                        navigate('/conteudos');
+                    }
                 }, 500);
             } else {
-                setError(data.mesage || 'Erro ao fazer Cadastro. Tente novamente');
+                setError(data.mesage || 'Erro ao fazer o login. Tente novamente');
             }
         } catch (erro) {
             console.error('Falha ao conectar a API', erro);

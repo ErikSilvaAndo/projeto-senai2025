@@ -22,10 +22,17 @@ const loginUsuario = async (req, res) => {
         if (!senhaValida) {
             return res.status(401).json({ erro: 'Senha inválida', })
         }
+<<<<<<< HEAD
         res.json({ mensagem: 'Login realizado com sucesso', usuario: { id: usuario.id_usuario, nome: usuario.nome, email: usuario.email, tipo: usuario.tipo, imagem: usuario.imagem } })
     } catch (error) {
         res.status(500).json({ erro: 'Erro no login', detalhe: error.message })
 
+=======
+        res.json({ mensagem: 'Login realizado com sucesso', usuario: { id: usuario.id_usuario, nome: usuario.nome, email: usuario.email, tipo: usuario.tipo, imagem: usuario.imagem}})
+    }catch(error) {
+        res.status(500).json({ erro: 'Erro no login', detalhe: error.message})
+        
+>>>>>>> d6ba482ff5838cd0ee61720cd66837f0453d6222
     }
 };
 

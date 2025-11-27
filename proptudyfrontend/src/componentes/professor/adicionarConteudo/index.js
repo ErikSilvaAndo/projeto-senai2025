@@ -132,7 +132,7 @@ const converterParaBase64 = (arquivo) => {
     });
 };
 
-const URL_BASE_API = 'http://localhost:3000'; 
+const URL_BASE_API = 'http://localhost:3000';
 
 const FormularioProduto = ({ aoAdicionarProduto }) => {
     const [titulo, setTitulo] = useState('');
@@ -146,7 +146,7 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
     const [id_materia, setIdMateria] = useState();
 
     const navigate = useNavigate();
-    
+
     // Reseta o estado do formulário
     const resetarFormulario = () => {
         setTitulo('');
@@ -172,7 +172,6 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         try {
             const imagemBase64 = await converterParaBase64(imagem);
             const pdfBase64 = await converterParaBase64(arquivo);
-            console.log()
             const resposta = await fetch('http://localhost:3000/conteudos/adicionarConteudos', {
                 method: 'POST',
                 headers: {
@@ -180,16 +179,16 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                 },
                 body: JSON.stringify({
                     fk_materia: id_materia,
-                    titulo: titulo, 
+                    titulo: titulo,
                     link: link,
-                    imagem: imagemBase64, 
+                    imagem: imagemBase64,
                     arquivo: pdfBase64,
                 }),
             });
-            
-            if(resposta.ok){
+
+            if (resposta.ok) {
                 navigate(-1)
-                
+
             }
 
             if (!resposta.ok) {
@@ -198,11 +197,10 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             }
 
             resetarFormulario();
-            aoAdicionarProduto(); 
+            aoAdicionarProduto();
 
         } catch (err) {
-            console.error('Erro ao cadastrar:', err);
-            // Mensagem de erro 
+            console.error('Erro ao cadastrar conteúdo:', err);
             setErro(`Falha ao cadastrar: ${err.message}.`);
         } finally {
             setEstaCarregando(false);
@@ -210,47 +208,47 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
         }
     };
 
-        useEffect (() => {
-            const fetchMaterias = async () => {
-                try {
-                    const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
-                    if(!resposta.ok){
-                        throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
-                    }
-                    const data = await resposta.json();
-                    setMateria(data);
-                    // console.log(data)
-                } catch (error) {
-                    setErro(error)
-                    console.error('Erro ao buscar os dados', error)
-                }finally{
-                    setLoading(false)
+    useEffect(() => {
+        const fetchMaterias = async () => {
+            try {
+                const resposta = await fetch('http://localhost:3000/materias/selecionarTodasMaterias');
+                if (!resposta.ok) {
+                    throw new Error(`Erro ao listar todas as matérias: ${resposta.status}`);
                 }
+                const data = await resposta.json();
+                setMateria(data);
+                // console.log(data)
+            } catch (error) {
+                setErro(error)
+                console.error('Erro ao buscar os dados', error)
+            } finally {
+                setLoading(false)
             }
-            fetchMaterias();
-        }, []);
+        }
+        fetchMaterias();
+    }, []);
 
-        const selecionarMateria = (e) => {
-            // O valor é sempre uma string, converta se o seu backend exigir número
-            setIdMateria(e.target.value); 
-        };
+    const selecionarMateria = (e) => {
+        // O valor é sempre uma string, converta se o seu backend exigir número
+        setIdMateria(e.target.value);
+    };
     return (
         <Container>
             <LogoImagem src={Logo}></LogoImagem>
-            <form 
-                onSubmit={aoSubmeter} 
+            <form
+                onSubmit={aoSubmeter}
             >
                 <CardLabelInput>
                     <Label htmlFor="materia">MATÉRIA:</Label>
-                        <Select id="id_materia" name="id_materia" onChange={selecionarMateria}>
+                    <Select id="id_materia" name="id_materia" onChange={selecionarMateria}>
                         <Option value="id_materia" >Selecione a sua matéria</Option>
-                            {Array.isArray(fk_materia) &&
-                                fk_materia.map(item => (
-                            <Option key={item.id_materia} value={item.id_materia}>
-                                {item.nome}
-                            </Option>
+                        {Array.isArray(fk_materia) &&
+                            fk_materia.map(item => (
+                                <Option key={item.id_materia} value={item.id_materia}>
+                                    {item.nome}
+                                </Option>
                             ))}
-                        </Select>
+                    </Select>
                 </CardLabelInput>
 
                 <CardLabelInput>
@@ -274,24 +272,24 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                         disabled={estaCarregando}
                     />
                 </CardLabelInput>
-                
+
                 <CardLabelInput>
                     <Label>IMAGEM:</Label>
-                        <LabelArquivo htmlFor="imagem">
-                            {imagem ? "Imagem Selecionada" : "Selecione uma imagem"}
-                            </LabelArquivo>
-                            <InputArquivo
-                            id="imagem"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setImagem(e.target.files[0])}
-                            required
-                        />
+                    <LabelArquivo htmlFor="imagem">
+                        {imagem ? "Imagem Selecionada" : "Selecione uma imagem"}
+                    </LabelArquivo>
+                    <InputArquivo
+                        id="imagem"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setImagem(e.target.files[0])}
+                        required
+                    />
                     <Label>ARQUIVO:</Label>
                     <LabelArquivo htmlFor="arquivo">
                         {arquivo ? "PDF Selecionado" : "Selecione um arquivo"}
-                        </LabelArquivo> 
-                        <InputArquivo
+                    </LabelArquivo>
+                    <InputArquivo
                         id="arquivo"
                         type="file"
                         accept="application/pdf"
@@ -308,12 +306,12 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
                     </div>
                 )}
 
-                    <CardBotao>
-                        <Botao type="submit" disabled={loading}>
-                            {loading ? 'Adicionando...' : 'ADICIONAR'}
-                        </Botao>
-                        <VoltarBotao onClick={() => navigate(-1)}>Voltar</VoltarBotao>
-                    </CardBotao>
+                <CardBotao>
+                    <Botao type="submit" disabled={loading}>
+                        {loading ? 'Adicionando...' : 'ADICIONAR'}
+                    </Botao>
+                    <VoltarBotao onClick={() => navigate(-1)}>Voltar</VoltarBotao>
+                </CardBotao>
             </form>
         </Container>
     );
@@ -345,32 +343,6 @@ const AdicionarMateria = () => {
         }
     };
 
-    // Função para deletar um produto
-    const aoDeletar = async (id, titulo) => {
-        if (!window.confirm(`Tem certeza que deseja excluir o produto "${titulo}" (ID: ${id})? Esta ação é irreversível e excluirá os arquivos do Vercel Blob.`)) {
-            return;
-        }
-
-        try {
-            const resposta = await fetch(`${URL_BASE_API}/produtos/${id}`, {
-                method: 'DELETE',
-            });
-
-            if (!resposta.ok) {
-                const dadosErro = await resposta.json();
-                throw new Error(dadosErro.error || `Erro HTTP: ${resposta.status}`);
-            }
-            
-            // Atualiza a lista removendo o produto deletado (otimista)
-            setProdutos(anterior => anterior.filter(p => p.id !== id));
-
-        } catch (err) {
-            console.error("Erro ao deletar produto:", err);
-            // Mensagem de erro aprimorada
-            setErro(`Falha ao excluir produto: ${err.message}. Verifique a URL: ${URL_BASE_API}/produtos/${id}.`);
-        }
-    };
-
     // Executa a busca na montagem do componente
     useEffect(() => {
         buscarProdutos();
@@ -378,7 +350,7 @@ const AdicionarMateria = () => {
 
     return (
         <div>
-            
+
             {/* Formulário de Cadastro */}
             <FormularioProduto aoAdicionarProduto={buscarProdutos} />
             <div>

@@ -1,0 +1,19 @@
+meta {
+  name: criarQuiz
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/quiz/criarQuiz
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "titulo": "Quiz - figuras de linguagem",
+    "descricao": "Quiz sobre figuras de linguagem",
+    "link": "https://wordwall.net/pt/resource/3073958/show-quiz-figuras-de-linguagem"
+  }
+}

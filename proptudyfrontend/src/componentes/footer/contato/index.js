@@ -80,7 +80,7 @@ export default function ContatoFooter() {
                 </CardTitulo>
                 <CardTexto>
                     <Texto>
-                        ☏ 3701 - 4747
+                        ☏ 3701 - 0000
                         <br/><WhattzapIcon src={Whattzap} /> (18) 99747 - 4747
                         <br/>📨prostudy@gmail.com
                     </Texto>

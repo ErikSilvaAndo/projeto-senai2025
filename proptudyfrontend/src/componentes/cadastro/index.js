@@ -125,7 +125,7 @@ export default function CadastroUsuario() {
                         navigate('/');
                     }, 800);
                 } else {
-                    setErro(data.mesage || 'Erro ao fazer Login. Tente novamente.');
+                    setErro(data.mesage || 'Erro ao fazer cadastro. Tente novamente.');
                 }
             } catch (erro) {
                 console.error('Falha ao conectar a API', erro);
@@ -198,7 +198,7 @@ export default function CadastroUsuario() {
                 </CardLabelInput>
                 <CardBotao>
                     <Botao type="submit" disabled={loading}>
-                        {loading ? 'Entrando...' : 'ENTRAR'}
+                        {loading ? 'Cadastrando...' : 'CADASTRAR'}
                     </Botao>
                     <VoltarBotao href="/">Voltar</VoltarBotao>
                 </CardBotao>

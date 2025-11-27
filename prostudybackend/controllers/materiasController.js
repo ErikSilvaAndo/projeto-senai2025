@@ -7,7 +7,7 @@ const criarMaterias = async(req, res) => {
         const materia = await materiasModel.criarMaterias(nome);
         res.json(materia)
     } catch (error) {
-        res.status(500).json({erro: 'Erro ao buscar pagamentos', detalhe: error.message})
+        res.status(500).json({erro: 'Erro ao buscar matérias', detalhe: error.message})
     }
 }
 

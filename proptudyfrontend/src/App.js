@@ -11,6 +11,8 @@ import PoliticaFooter from './componentes/footer/politica';
 import TermosUsoFooter from './componentes/footer/termos de uso';
 import ContatoFooter from './componentes/footer/contato';
 import MeuPerfil from './componentes/perfil';
+import AdicionarQuiz from './componentes/professor/quiz/adicionarQuiz';
+import ListarQuiz from './componentes/professor/quiz/quizProfessor';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
           <Route path='/termosDeUso' element={<TermosUsoFooter titulo="Página termos de uso"/>}></Route>
           <Route path='/contato' element={<ContatoFooter titulo="Página de contato"/>}></Route>
           <Route path='/perfil/:id_usuario' element={<MeuPerfil titulo="Página de perfil"/>}></Route>
+          <Route path='/adicionarQuiz' element={<AdicionarQuiz titulo="Página de adicionar quiz" />}></Route>
+          <Route path='/listarQuiz' element={<ListarQuiz titulo="Página de listar quiz" />}></Route>
         </Routes>
       </Router>
   );

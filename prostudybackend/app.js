@@ -7,6 +7,7 @@ const { put, del } = require('@vercel/blob');
 const conteudosRoutes = require("./routes/conteudosRoutes")
 const materiasRoutes = require("./routes/materiasRoutes")
 const usuariosRoutes = require("./routes/usuariosRoutes")
+const quizRoutes = require('./routes/quizRoutes')
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json({ limit: "50mb" }))
 app.use('/conteudos', conteudosRoutes)
 app.use('/materias', materiasRoutes)
 app.use('/usuarios', usuariosRoutes)
+app.use('/quiz', quizRoutes)
 
 
 app.get('/', (req, res) => {

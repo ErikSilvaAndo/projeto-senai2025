@@ -113,10 +113,14 @@ export default function Login() {
                 setTimeout(() => {
                     setLoginSucesso(false);
                     localStorage.setItem('usuario', JSON.stringify(data.usuario));
-                    navigate('/conteudos');
+                    if (data.usuario.tipo === "professor") {
+                        navigate('/conteudosProfessor');
+                    } else {
+                        navigate('/conteudos');
+                    }
                 }, 500);
             } else {
-                setError(data.mesage || 'Erro ao fazer Cadastro. Tente novamente');
+                setError(data.mesage || 'Erro ao fazer o login. Tente novamente');
             }
         } catch (erro) {
             console.error('Falha ao conectar a API', erro);
@@ -133,11 +137,11 @@ export default function Login() {
             {error && (
                 <ErroAoLogar>{error}</ErroAoLogar>
             )}
-                <Imagem src={Logo}></Imagem>
+            <Imagem src={Logo}></Imagem>
             <form onSubmit={executaSubmit}>
                 <CardLabelInput>
                     <Label htmlFor="email">EMAIL:</Label>
-                    <Input 
+                    <Input
                         type="email"
                         id="email"
                         name="email"
@@ -146,22 +150,22 @@ export default function Login() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                        <Label htmlFor="senha">SENHA:</Label>
-                        <Input
-                            type="password"
-                            id="senha"
-                            name="senha"
-                            // placeholder="Digite sua senha"
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                            required
-                        />
+                    <Label htmlFor="senha">SENHA:</Label>
+                    <Input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        // placeholder="Digite sua senha"
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
+                        required
+                    />
                 </CardLabelInput>
                 <CardBotao>
                     <Botao type="submit" disabled={loading}><strong>{loading ? 'Entrando...' : 'ENTRAR'}</strong></Botao>
                 </CardBotao>
                 <CardCadastreSe>
-                    <CadastreSe href="/cadastroUsuario">Cadastre-se</CadastreSe>   
+                    <CadastreSe href="/cadastroUsuario">Cadastre-se</CadastreSe>
                 </CardCadastreSe>
             </form>
         </Container>

@@ -48,7 +48,7 @@ const Nav = styled.nav`
 const NavLink = styled.a`
     color: #fff;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 23px;
     margin-bottom: 10px;
     text-decoration: none;
     &:hover {
@@ -148,7 +148,7 @@ const LinksRodape = styled.a`
     color: #000;
     text-decoration: none;
     font-weight: 1000;
-    font-size: 14px;
+    font-size: 18px;
     &:hover {
         text-decoration: underline;
         cursor: pointer;
@@ -318,12 +318,12 @@ export default function Conteudo({id}) {
             </Header>
                 <Nav>
                     <NavLink href="/conteudos">INÍCIO</NavLink>
-                    <NavLink>DISCIPLINAS</NavLink>
+                    <NavLink href="/listarQuiz">QUIZ</NavLink>
                     <NavLink onClick={irParaPerfil}>MEU PERFIL</NavLink>
                     <NavLink href="/" onClick={logout}>SAIR</NavLink>
                     {Array.isArray(usuario) &&
                         usuario.map((item) => (
-                            <BolaDoPerfil key={item.id} onClick={irParaPerfil}>
+                            <BolaDoPerfil key={item.id}>
                                 <img src={item.imagem}></img>
                             </BolaDoPerfil>
                     ))}
@@ -332,7 +332,7 @@ export default function Conteudo({id}) {
             <MainContent>
                 <SearchSection>
                     <SearchInputContainer>
-                        <Titulo htmlFor="pesquisar">O que você quer estudar hoje?</Titulo>
+                        <Titulo htmlFor="pesquisar">O que você quer pesquisar?</Titulo>
                         <SearchInput id="pesquisar" name="pesquisar" onChange={handleInputChange}/>
                     </SearchInputContainer>
                 </SearchSection>
@@ -362,7 +362,7 @@ export default function Conteudo({id}) {
             <SeccaoMaterias>
                     {materias.map(item => (
                         <MateriasCard onClick={() => irParaMateria(item.id_materia)}>
-                            <a key={item.id_materia} onClick={() => irParaMateria(item.id_materia)}>{item.nome}</a>
+                            <a key={item.id_materia} onClick={() => irParaMateria(item.id_materia)} style={{fontSize: 17}}>{item.nome}</a>
                         </MateriasCard>
                     ))}
             </SeccaoMaterias>

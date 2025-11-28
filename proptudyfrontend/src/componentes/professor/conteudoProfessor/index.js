@@ -318,7 +318,7 @@ export default function Conteudo({id}) {
             </Header>
                 <Nav>
                     <NavLink href="/conteudos">INÍCIO</NavLink>
-                    <NavLink href="/listarQuiz">QUIZ</NavLink>
+                    <NavLink href="/listarQuizProfessor">QUIZ</NavLink>
                     <NavLink onClick={irParaPerfil}>MEU PERFIL</NavLink>
                     <NavLink href="/" onClick={logout}>SAIR</NavLink>
                     {Array.isArray(usuario) &&

@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from './componentes/login/index'
 import CadastroUsuario from './componentes/cadastro'
 import Conteudo from './componentes/conteudo';
@@ -12,8 +13,9 @@ import TermosUsoFooter from './componentes/footer/termos de uso';
 import ContatoFooter from './componentes/footer/contato';
 import MeuPerfil from './componentes/perfil';
 import AdicionarQuiz from './componentes/professor/quiz/adicionarQuiz';
-import ListarQuiz from './componentes/professor/quiz/quizProfessor';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ListarQuizProfessor from './componentes/professor/quiz/quizProfessor';
+import EditarQuiz from './componentes/professor/quiz/editarQuiz';
+import ListarQuiz from './componentes/quiz';
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
           <Route path='/contato' element={<ContatoFooter titulo="Página de contato"/>}></Route>
           <Route path='/perfil/:id_usuario' element={<MeuPerfil titulo="Página de perfil"/>}></Route>
           <Route path='/adicionarQuiz' element={<AdicionarQuiz titulo="Página de adicionar quiz" />}></Route>
+          <Route path='/listarQuizProfessor' element={<ListarQuizProfessor titulo="Página de listar quiz" />}></Route>
+          <Route path='/editarQuiz/:id_quiz' element={<EditarQuiz titulo="Página de editar quiz" />}></Route>
           <Route path='/listarQuiz' element={<ListarQuiz titulo="Página de listar quiz" />}></Route>
         </Routes>
       </Router>

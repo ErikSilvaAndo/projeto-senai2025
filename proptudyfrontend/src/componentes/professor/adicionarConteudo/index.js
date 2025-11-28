@@ -200,11 +200,8 @@ const FormularioProduto = ({ aoAdicionarProduto }) => {
             aoAdicionarProduto();
 
         } catch (err) {
-<<<<<<< HEAD
             console.error('Erro ao cadastrar conteúdo:', err);
-=======
             console.error('Erro ao cadastrar conteúdo:', err); 
->>>>>>> d6ba482ff5838cd0ee61720cd66837f0453d6222
             setErro(`Falha ao cadastrar: ${err.message}.`);
         } finally {
             setEstaCarregando(false);

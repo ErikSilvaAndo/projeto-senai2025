@@ -6,13 +6,6 @@ CREATE TABLE usuarios(
     tipo VARCHAR(20) NOT NULL DEFAULT 'aluno',
 	imagem TEXT
 );
-<<<<<<< HEAD
-=======
-
-SELECT * FROM usuarios
-
-DROP TABLE usuarios
->>>>>>> d6ba482ff5838cd0ee61720cd66837f0453d6222
 
 CREATE TABLE IF NOT EXISTS professores_autorizados(
     id SERIAL PRIMARY KEY,
@@ -49,24 +42,18 @@ CREATE TABLE IF NOT EXISTS representantes_autorizados(
     email VARCHAR(255) UNIQUE NOT NULL
 );
 
-<<<<<<< HEAD
 CREATE TABLE IF NOT EXISTS quiz(
 	id_quiz SERIAL PRIMARY KEY,
+	id_materia INT,
 	titulo VARCHAR(100),
-	descricao VARCHAR(255),
-	link VARCHAR(255)
+	link VARCHAR(255),
+	CONSTRAINT id_materia FOREIGN KEY (id_materia) REFERENCES materias(id_materia)
 );
-
-        UPDATE quiz
-        SET titulo = 'teste', descricao = 'teste', link = 'https://wordwall.net/pt/resource/3073958/show-quiz-figuras-de-linguagem'
-        WHERE id_quiz = 1 RETURNING *
 
 DROP TABLE quiz
 
 SELECT * FROM quiz
 
-=======
->>>>>>> d6ba482ff5838cd0ee61720cd66837f0453d6222
 CREATE OR REPLACE FUNCTION verificaUsuariosAutorizados()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -99,15 +86,12 @@ FOR EACH ROW
 EXECUTE FUNCTION verificaUsuariosAutorizados();
 	
 INSERT INTO professores_autorizados (email) 
-<<<<<<< HEAD
 VALUES ('testep2@gmail.com');
 
 DELETE FROM professores_autorizados
 
-=======
 VALUES ('b@gmail.com');
 
->>>>>>> d6ba482ff5838cd0ee61720cd66837f0453d6222
 SELECT * FROM professores_autorizados
 
 DROP TABLE professores_autorizados
@@ -115,14 +99,11 @@ DROP TABLE professores_autorizados
 DELETE FROM usuarios WHERE email = 'rapha@gmail.com'
 SELECT * FROM usuarios
 
-<<<<<<< HEAD
 SELECT * FROM materias
 
 UPDATE materias
 SET nome = 'Inglês' 
 WHERE id_materia = 10
 
-=======
->>>>>>> d6ba482ff5838cd0ee61720cd66837f0453d6222
 INSERT INTO materias(nome)
 VALUES('Matemática')

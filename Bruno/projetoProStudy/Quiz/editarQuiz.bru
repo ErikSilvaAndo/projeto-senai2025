@@ -5,15 +5,15 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/quiz/editarQuiz/1
+  url: http://localhost:3000/quiz/editarQuiz/3
   body: json
   auth: inherit
 }
 
 body:json {
   {
+    "fk_materia": "4",
     "titulo": "a - figuras de linguagem",
-    "descricao": "Quiz sobre figuras de linguagem",
     "link": "https://wordwall.net/pt/resource/3073958/show-quiz-figuras-de-linguagem"
   }
 }

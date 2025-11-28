@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Logo from '../../imagens/logoCortada.png'
-import Conteudo from "../../conteudo";
 
 const Container = styled.div`
     background-color: #131D47;
@@ -25,12 +24,6 @@ const VoltarBotao = styled.a`
         cursor: pointer;
         text-decoration: underline
     }
-`;
-
-const Imagem = styled.img`
-    width: 250px;
-    height: 150px;
-    margin: 10px
 `;
 
 const CardLabelInput = styled.div`

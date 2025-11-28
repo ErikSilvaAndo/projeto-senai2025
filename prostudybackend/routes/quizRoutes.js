@@ -6,5 +6,6 @@ router.get('/listarQuiz', quizController.listarQuiz);
 router.post('/criarQuiz', quizController.criarQuiz);
 router.put('/editarQuiz/:id_quiz', quizController.editarQuiz)
 router.delete('/deletarQuiz/:id_quiz', quizController.deletarQuiz)
+router.get('/selecionarIdMateriaPorIdQuiz/:id_quiz', quizController.selecionarIdMateriaPorIdQuiz)
 
 module.exports = router

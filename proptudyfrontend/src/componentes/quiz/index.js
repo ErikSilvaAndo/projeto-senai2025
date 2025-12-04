@@ -310,7 +310,6 @@ export default function ListarQuiz() {
                 {quiz.map(item => (
                     <CardQuiz>
                         <TituloQuiz key={item.id_quiz}>{item.titulo}</TituloQuiz>
-                        <p style={{ color: "black" }}>{item.descricao}</p>
                         <CardLinks>
                             <Links href={item.link} target="_blank">Quiz</Links>
                         </CardLinks>

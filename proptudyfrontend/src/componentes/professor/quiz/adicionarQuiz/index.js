@@ -6,7 +6,7 @@ import Logo from "../../../imagens/logo2.png";
 
 const Container = styled.div`
     background-color: #131D47;
-    height: 100%;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -107,7 +107,6 @@ const LogoImagem = styled.img`
 
 export default function AdicionarQuiz() {
     const [titulo, setTitulo] = useState('');
-    const [descricao, setDescricao] = useState('');
     const [link, setLink] = useState('');
     const [materias, setMateria] = useState([]);
     const [id_materia, setIdMateria] = useState();
@@ -119,7 +118,6 @@ export default function AdicionarQuiz() {
 
     const resetarFormulario = () => {
         setTitulo('');
-        setDescricao('');
         setLink('');
     };
 
@@ -127,7 +125,7 @@ export default function AdicionarQuiz() {
         e.preventDefault();
         setErro('');
 
-        if (!titulo || !descricao || !link) {
+        if (!titulo || !link) {
             setErro('Por favor, preencha todos os campos e selecione os arquivos.');
             return;
         }
@@ -144,12 +142,11 @@ export default function AdicionarQuiz() {
                 body: JSON.stringify({
                     id_materia: id_materia,
                     titulo: titulo,
-                    descricao: descricao,
                     link: link,
                 }),
             });
 
-            if (!id_materia || !titulo || !descricao || !link) {
+            if (!id_materia || !titulo || !link) {
                 alert("Preencha todos os campos")
             }
 
@@ -209,7 +206,7 @@ export default function AdicionarQuiz() {
                                 {Array.isArray(materias) &&
                                     materias.map(item => (
                                         <Option key={item.id_materia} value={item.id_materia}>
-                                            {item.nome} {item.id_materia}
+                                            {item.nome}
                                         </Option>
                                     ))}
                             </Select>
@@ -226,16 +223,6 @@ export default function AdicionarQuiz() {
                                 />
                     </CardLabelInput>
                     
-                    <CardLabelInput>
-                        <Label>DESCRIÇÃO:</Label>
-                        <Input
-                            type="text"
-                            value={descricao}
-                            onChange={(e) => setDescricao(e.target.value)}
-                            required
-                            disabled={estaCarregando}
-                        />
-                    </CardLabelInput>
                     <CardLabelInput>
                         <Label>LINK:</Label>
                         <Input

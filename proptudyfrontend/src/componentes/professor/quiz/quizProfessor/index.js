@@ -205,7 +205,6 @@ const TituloPesquisa = styled.label`
 
 export default function ListarQuizProfessor() {
     const [titulo, setTitulo] = useState('');
-    const [descricao, setDescricao] = useState('');
     const [link, setLink] = useState('');
     const [estaCarregando, setEstaCarregando] = useState(false);
     const [quiz, setQuiz] = useState([])
@@ -311,7 +310,6 @@ export default function ListarQuizProfessor() {
                 {quiz.map(item => (
                     <CardQuiz>
                         <TituloQuiz key={item.id_quiz}>{item.titulo}</TituloQuiz>
-                        <p style={{ color: "black" }}>{item.descricao}</p>
                         <IconesAcoes>
                             <BotaoIcone onClick={() => navigate(`/editarQuiz/${item.id_quiz}`)}>
                                 <i className="bi bi-pencil-square"></i>
